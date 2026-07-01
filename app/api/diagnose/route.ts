@@ -127,18 +127,41 @@ export async function POST(request: any) {
       aiData = buatFallbackJSON(produk, hargaModalPerUnit);
     }
 
-    // Validasi field kritis
+    // Validasi & sanitasi field kritis — paksa tipe yang benar
+    // React error #31: AI kadang mengembalikan objek {keuangan, stok, ...}
+    // sebagai 'diagnosis' alih-alih string, karena instruksi "dari 4 aspek"
+    // disalahartikan AI sebagai struktur objek, bukan teks naratif.
+    // Maka kita paksa casting ke string di sini.
     if (typeof aiData.estimasi_harga_jual_baru !== 'number' || aiData.estimasi_harga_jual_baru <= 0) {
       aiData.estimasi_harga_jual_baru = Math.round(hargaModalPerUnit * 1.5);
     }
     if (typeof aiData.jumlah_unit_per_paket !== 'number' || aiData.jumlah_unit_per_paket < 1) {
       aiData.jumlah_unit_per_paket = 1;
     }
-    if (!aiData.diagnosis) aiData.diagnosis = "Data diagnosis tidak tersedia.";
-    if (!aiData.nama_ide_pivot) aiData.nama_ide_pivot = `Paket ${produk}`;
-    if (!aiData.deskripsi_pivot) aiData.deskripsi_pivot = "Deskripsi tidak tersedia.";
+
+    // Force string — jika objek {keuangan, stok, ...}, konversi ke teks
+    if (!aiData.diagnosis) {
+      aiData.diagnosis = "Data diagnosis tidak tersedia.";
+    } else if (typeof aiData.diagnosis === 'object') {
+      aiData.diagnosis = Object.values(aiData.diagnosis).join('\n\n');
+    }
+
+    if (!aiData.nama_ide_pivot) {
+      aiData.nama_ide_pivot = `Paket ${produk}`;
+    } else if (typeof aiData.nama_ide_pivot === 'object') {
+      aiData.nama_ide_pivot = JSON.stringify(aiData.nama_ide_pivot);
+    }
+
+    if (!aiData.deskripsi_pivot) {
+      aiData.deskripsi_pivot = "Deskripsi tidak tersedia.";
+    } else if (typeof aiData.deskripsi_pivot === 'object') {
+      aiData.deskripsi_pivot = Object.values(aiData.deskripsi_pivot).join('\n');
+    }
+
     if (!aiData.draft_whatsapp) {
       aiData.draft_whatsapp = `Halo! Yuk cobain ${produk} terbaru dari kami!`;
+    } else if (typeof aiData.draft_whatsapp === 'object') {
+      aiData.draft_whatsapp = Object.values(aiData.draft_whatsapp).join(' ');
     }
 
     // --- Hitung finansial via pure function ---

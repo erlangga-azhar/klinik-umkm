@@ -14,6 +14,10 @@ interface ResepCardProps {
 export default function ResepCard({ report, onKonsultasiUlang }: ResepCardProps) {
   const [copied, setCopied] = useState<boolean>(false);
 
+  // Guard: jika report null/undefined, jangan render apapun
+  // Mencegah React error #31 jika data dari API tidak sesuai format
+  if (!report) return null;
+
   const handleCopyPesan = async () => {
     if (!report?.draft_whatsapp) return;
     try {
