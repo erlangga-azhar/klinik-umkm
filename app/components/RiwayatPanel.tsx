@@ -37,7 +37,7 @@ export default function RiwayatPanel({ history, onMuat, onClearHistory }: Riwaya
   };
 
   return (
-    <div className="mb-6 backdrop-blur-xl bg-white/80 dark:bg-zinc-900/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] border border-slate-100/80 dark:border-zinc-800/80 rounded-3xl p-5 relative overflow-visible">
+    <div className="mb-6 bg-white/70 dark:bg-zinc-900/75 border border-slate-100/80 dark:border-zinc-800/60 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] rounded-3xl p-5 relative overflow-visible">
       {/* Dialog Konfirmasi Hapus */}
       {showConfirmDelete && (
         <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm rounded-3xl p-5">

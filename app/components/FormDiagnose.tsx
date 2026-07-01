@@ -33,7 +33,7 @@ export default function FormDiagnose({
   onSelectKeluhan,
 }: FormDiagnoseProps) {
   return (
-    <form onSubmit={onSubmit} className="backdrop-blur-xl bg-white/80 dark:bg-zinc-900/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] border border-slate-100/80 dark:border-zinc-800/80 rounded-3xl p-6 sm:p-8 space-y-7">
+    <form onSubmit={onSubmit} className="bg-white/70 dark:bg-zinc-900/75 border border-slate-100/80 dark:border-zinc-800/60 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] rounded-3xl p-6 sm:p-8 space-y-7">
       <h2 className="text-lg font-bold flex items-center gap-2.5 border-b border-slate-100 dark:border-zinc-800 pb-4 text-slate-900 dark:text-white">
         <div className="w-7 h-7 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
           <Pill className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />

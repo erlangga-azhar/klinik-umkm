@@ -44,7 +44,7 @@ export default function ChatBox({
   };
 
   return (
-    <div className="backdrop-blur-xl bg-white/80 dark:bg-zinc-900/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] border border-slate-100/80 dark:border-zinc-800/80 rounded-3xl p-5 sm:p-6">
+    <div className="bg-white/70 dark:bg-zinc-900/75 border border-slate-100/80 dark:border-zinc-800/60 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] rounded-3xl p-5 sm:p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-zinc-500 flex items-center gap-2">
           <MessageCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />

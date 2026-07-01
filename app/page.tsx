@@ -295,7 +295,20 @@ export default function KlinikUMKM() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-emerald-50/15 to-white text-slate-800 dark:from-zinc-950 dark:via-emerald-950/10 dark:to-zinc-900 dark:text-zinc-100 transition-[color,background,border,box-shadow] duration-300">
+    <main className="relative min-h-screen bg-gradient-to-b from-slate-50 via-emerald-50/15 to-white text-slate-800 dark:from-zinc-950 dark:via-emerald-950/10 dark:to-zinc-900 dark:text-zinc-100 transition-[color,background,border,box-shadow] duration-300">
+
+      {/* ================================================================== */}
+      {/* DATA GRID PATTERN — garis metrik samar di seluruh halaman           */}
+      {/* ================================================================== */}
+      <div className="fixed inset-0 pointer-events-none z-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] dark:bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)]" />
+
+      {/* ================================================================== */}
+      {/* FLOATING AURA BLOBS — pendaran cahaya dinamis yang bernapas pelan   */}
+      {/* ================================================================== */}
+      <div className="fixed pointer-events-none z-0 inset-0 overflow-hidden">
+        <div className="absolute -top-48 -left-48 w-[600px] h-[600px] rounded-full bg-emerald-400/10 dark:bg-emerald-400/15 blur-[130px] animate-aura-pulse" />
+        <div className="absolute -bottom-48 -right-48 w-[600px] h-[600px] rounded-full bg-indigo-400/10 dark:bg-indigo-500/15 blur-[130px] animate-aura-pulse-delayed" />
+      </div>
 
       {/* ================================================================== */}
       {/* THEME TOGGLE — Floating button, safe di viewport corner,            */}
@@ -322,11 +335,6 @@ export default function KlinikUMKM() {
       {/* HERO SECTION                                                       */}
       {/* ================================================================== */}
       <section className="relative overflow-hidden pt-20 pb-20 sm:pt-24 sm:pb-28 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-emerald-400/10 blur-[120px] dark:bg-emerald-400/5" />
-          <div className="absolute -bottom-40 -left-40 w-[400px] h-[400px] rounded-full bg-teal-300/10 blur-[100px] dark:bg-teal-300/5" />
-        </div>
-
         <div className="max-w-4xl mx-auto text-center relative">
           <div className="inline-flex mb-6 items-center gap-2 px-4 py-2 bg-white/90 dark:bg-zinc-900/80 backdrop-blur-sm border border-slate-200/70 dark:border-zinc-800/70 rounded-full shadow-[0_2px_12px_rgb(0,0,0,0.03)]">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -411,7 +419,7 @@ export default function KlinikUMKM() {
               return (
                 <div
                   key={idx}
-                  className="group relative backdrop-blur-xl bg-white/75 dark:bg-zinc-900/80 border border-slate-200/70 dark:border-zinc-800/70 rounded-3xl p-5 sm:p-6 shadow-[0_2px_16px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgb(0,0,0,0.15)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-1"
+                  className="group relative bg-white/70 dark:bg-zinc-900/75 border border-slate-100/80 dark:border-zinc-800/60 backdrop-blur-md rounded-3xl p-5 sm:p-6 shadow-[0_2px_16px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgb(0,0,0,0.15)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-1"
                 >
                   {/* Glassmorphism shine overlay */}
                   <div className="absolute inset-0 rounded-3xl bg-gradient-to-b from-white/40 dark:from-white/5 to-transparent pointer-events-none" />
@@ -455,7 +463,7 @@ export default function KlinikUMKM() {
         <div className="max-w-3xl mx-auto">
 
           {/* Error notification */}            {error && (
-            <div className="mb-6 p-4 bg-rose-50/90 dark:bg-rose-950/40 backdrop-blur-sm border border-rose-200/80 dark:border-rose-900/60 text-rose-700 dark:text-rose-300 rounded-2xl flex items-start gap-3 shadow-[0_4px_20px_rgb(0,0,0,0.03)]">
+            <div className="mb-6 p-4 bg-rose-50/80 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/60 backdrop-blur-md text-rose-700 dark:text-rose-300 rounded-2xl flex items-start gap-3 shadow-[0_4px_20px_rgb(0,0,0,0.03)]">
               <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
               <p className="text-sm font-medium">{error}</p>
             </div>
@@ -484,7 +492,7 @@ export default function KlinikUMKM() {
 
           {/* Loading State */}
           {loading && (
-            <div className="backdrop-blur-xl bg-white/80 dark:bg-zinc-900/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] border border-slate-100/80 dark:border-zinc-800/80 rounded-3xl p-12 sm:p-16 text-center space-y-6">
+            <div className="bg-white/70 dark:bg-zinc-900/75 border border-slate-100/80 dark:border-zinc-800/60 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] rounded-3xl p-12 sm:p-16 text-center space-y-6">
               <div className="relative inline-flex">
                 <div className="absolute inset-0 rounded-full bg-emerald-400/20 animate-ping" />
                 <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-[0_8px_30px_rgb(16,185,129,0.2)]">

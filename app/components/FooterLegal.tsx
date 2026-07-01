@@ -179,7 +179,7 @@ export default function FooterLegal() {
 
         {/* Modal Card */}
         <div
-          className={`relative max-w-lg w-full backdrop-blur-xl bg-white/95 dark:bg-zinc-900/95 border border-slate-200/80 dark:border-zinc-800/80 rounded-3xl p-6 sm:p-8 shadow-[0_20px_60px_rgb(0,0,0,0.12)] dark:shadow-[0_20px_60px_rgb(0,0,0,0.5)] transition-all duration-300 ease-out ${
+          className={`relative max-w-lg w-full bg-white/70 dark:bg-zinc-900/75 border border-slate-100/80 dark:border-zinc-800/60 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-[0_20px_60px_rgb(0,0,0,0.12)] dark:shadow-[0_20px_60px_rgb(0,0,0,0.5)] transition-all duration-300 ease-out ${
             activeModal
               ? 'opacity-100 scale-100'
               : 'opacity-0 scale-95'

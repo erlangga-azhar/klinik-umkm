@@ -8,6 +8,30 @@
 }
 
 /* ======================================================================== */
+/* CUSTOM ANIMATIONS                                                         */
+/* Slow-pulse untuk floating aura blobs agar terasa bernapas pelan.          */
+/* ======================================================================== */
+@keyframes aura-pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.08);
+  }
+}
+
+.animate-aura-pulse {
+  animation: aura-pulse 6s ease-in-out infinite;
+}
+
+.animate-aura-pulse-delayed {
+  animation: aura-pulse 8s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+/* ======================================================================== */
 /* GLOBAL THEME TRANSITIONS                                                 */
 /* Semua elemen akan bertransisi mulus saat dark/light class berganti.       */
 /* Hanya property visual yang berubah saat tema (warna, bg, border, shadow)  */

@@ -28,7 +28,7 @@ export default function ResepCard({ report, onKonsultasiUlang }: ResepCardProps)
   return (
     <div className="space-y-5">
       {/* Kartu Diagnosis */}
-      <div className="backdrop-blur-xl bg-amber-50/80 dark:bg-amber-950/30 shadow-[0_8px_30px_rgb(0,0,0,0.03)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] border border-amber-200/80 dark:border-amber-900/60 rounded-3xl p-6">
+      <div className="bg-white/70 dark:bg-zinc-900/75 border border-slate-100/80 dark:border-zinc-800/60 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.03)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] rounded-3xl p-6">
         <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-amber-700 dark:text-amber-300 mb-3 flex items-center gap-2">
           <div className="w-1 h-1 rounded-full bg-amber-500" />
           Hasil Diagnosis Sistem
@@ -37,7 +37,7 @@ export default function ResepCard({ report, onKonsultasiUlang }: ResepCardProps)
       </div>
 
       {/* Kartu Resep Utama */}
-      <div className="backdrop-blur-xl bg-white/80 dark:bg-zinc-900/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] border-2 border-emerald-400/70 rounded-3xl p-6 sm:p-8 relative overflow-hidden">
+      <div className="bg-white/70 dark:bg-zinc-900/75 border-2 border-emerald-400/70 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] rounded-3xl p-6 sm:p-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] rounded-bl-2xl shadow-[0_2px_12px_rgb(16,185,129,0.2)]">
           Resep Utama
         </div>
@@ -92,7 +92,7 @@ export default function ResepCard({ report, onKonsultasiUlang }: ResepCardProps)
       </div>
 
       {/* Kartu Pemasaran Premium */}
-      <div className="backdrop-blur-xl bg-white/80 dark:bg-zinc-900/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] border border-slate-100/80 dark:border-zinc-800/80 rounded-3xl p-6 space-y-4">
+      <div className="bg-white/70 dark:bg-zinc-900/75 border border-slate-100/80 dark:border-zinc-800/60 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] rounded-3xl p-6 space-y-4">
         <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400 dark:text-zinc-500 flex items-center gap-2">
           <MessageCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
           Amunisi Pemasaran
