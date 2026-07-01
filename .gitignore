@@ -61,3 +61,5 @@ dist/
 *.tsbuildinfo
 next-env.d.ts
 nul
+CLAUDE.md
+AGENTS.md
