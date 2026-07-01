@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FileText, Trash2, ArrowRight, AlertTriangle } from 'lucide-react';
 
 interface HistoryItem {
@@ -21,7 +21,18 @@ interface RiwayatPanelProps {
 }
 
 export default function RiwayatPanel({ history, onMuat, onClearHistory }: RiwayatPanelProps) {
+  const [hasMounted, setHasMounted] = useState<boolean>(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState<boolean>(false);
+
+  // Anti-hydration mismatch: pastikan komponen sudah mounting di client
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  // Selama SSR / sebelum mount, jangan render apapun
+  if (!hasMounted) {
+    return null;
+  }
 
   const hapusSemuaRiwayat = () => {
     setShowConfirmDelete(true);

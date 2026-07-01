@@ -12,10 +12,9 @@
 
 <p align="center">
   <a href="https://klinik-umkm.vercel.app"><img src="https://img.shields.io/badge/Live_Demo-klinik--umkm.vercel.app-10b981?style=flat-square&logo=vercel&logoColor=white&labelColor=18181b" alt="Live Demo" /></a>
-  <a href="#"><img src="https://img.shields.io/badge/Status-Production_Ready-22c55e?style=flat-square&labelColor=18181b" alt="Status" /></a>
-  <a href="#"><img src="https://img.shields.io/badge/Test_Coverage-148_tests-8b5cf6?style=flat-square&labelColor=18181b" alt="Test Coverage" /></a>
+  <a href="https://klinik-umkm.vercel.app"><img src="https://img.shields.io/badge/Status-Production_Ready-22c55e?style=flat-square&labelColor=18181b" alt="Status" /></a>
+  <a href="#test-coverage"><img src="https://img.shields.io/badge/Test_Coverage-148_tests-8b5cf6?style=flat-square&labelColor=18181b" alt="Test Coverage" /></a>
   <a href="https://github.com/erlangga-azhar/klinik-umkm/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/erlangga-azhar/klinik-umkm/ci.yml?style=flat-square&label=CI%2FCD&logo=githubactions&logoColor=white&labelColor=18181b" alt="CI/CD" /></a>
-  <a href="https://github.com/erlangga-azhar/klinik-umkm/actions/workflows/ci.yml"><img src="https://github.com/erlangga-azhar/klinik-umkm/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
   <a href="https://github.com/erlangga-azhar/klinik-umkm/stargazers"><img src="https://img.shields.io/github/stars/erlangga-azhar/klinik-umkm?style=flat-square&logo=github&logoColor=white&labelColor=18181b" alt="Stars" /></a>
   <a href="https://github.com/erlangga-azhar/klinik-umkm/forks"><img src="https://img.shields.io/github/forks/erlangga-azhar/klinik-umkm?style=flat-square&logo=github&logoColor=white&labelColor=18181b" alt="Forks" /></a>
 </p>
@@ -28,9 +27,26 @@
   <img src="https://img.shields.io/badge/Tailwind_CSS_4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS 4" />
   <img src="https://img.shields.io/badge/Google_Gemini_2.5_Flash-8B5CF6?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Google Gemini" />
   <img src="https://img.shields.io/badge/Clean_Architecture-22c55e?style=for-the-badge&logo=clean&logoColor=white" alt="Clean Architecture" />
+  <img src="https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge&labelColor=18181b" alt="License MIT" />
 </p>
 
 <br />
+
+---
+
+## 📋 Daftar Isi
+
+- [💉 Kenapa Klinik UMKM?](#-kenapa-klinik-umkm)
+- [🧠 Fitur Unggulan](#-fitur-unggulan)
+- [🏗️ Arsitektur — Clean Architecture](#️-arsitektur--clean-architecture)
+- [🛡️ Keamanan — 3 Lapis Validasi Input](#️-keamanan--3-lapis-validasi-input)
+- [✅ Test Coverage](#-test-coverage)
+- [📁 Struktur Proyek](#-struktur-proyek)
+- [🚀 Cara Memulai](#-cara-memulai)
+- [🤝 Kontribusi](#-kontribusi)
+- [👤 Developer](#-developer)
+- [❓ FAQ — Pertanyaan Umum](#-faq--pertanyaan-umum)
+- [⚖️ Legalitas & Aturan Main](#️-legalitas--aturan-main)
 
 ---
 
@@ -44,6 +60,14 @@
   <a href="https://klinik-umkm.vercel.app">
     <img src="https://img.shields.io/badge/🚀_Coba_Sekarang-10b981?style=for-the-badge&labelColor=18181b" alt="Coba Sekarang" />
   </a>
+</p>
+
+<br />
+
+<p align="center">
+  <img src="public/preview.png" alt="Klinik UMKM Preview — AI Diagnosis Bisnis" width="800" style="border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.15);" />
+  <br />
+  <em>🩺 Dashboard utama Klinik UMKM — Masukkan data bisnis, dapatkan resep model langganan dalam 3 menit.</em>
 </p>
 
 ---
@@ -285,14 +309,14 @@ klinik-umkm/
 │   ├── financeService.ts            # Kalkulator finansial UMKM
 │   ├── geminiService.ts             # Konfigurasi Gemini AI
 │   └── __tests__/
-│       ├── financeService.test.ts   # Unit test finance (23 tests)
-│       └── securityService.test.ts  # Unit test security (35 tests)
+│       ├── financeService.test.ts   # Unit test finance (34 tests)
+│       └── securityService.test.ts  # Unit test security (50 tests)
 ├── app/
 │   ├── api/diagnose/
 │   │   ├── route.ts                 # API controller (thin)
 │   │   ├── route.test.ts            # Unit test finansial (9 tests)
-│   │   ├── route.security.test.ts   # Unit test keamanan (83 tests)
-│   │   └── route.int.test.ts        # Integration test API (18 tests)
+│   │   ├── route.security.test.ts   # Unit test keamanan (48 tests)
+│   │   └── route.int.test.ts        # Integration test API (7 tests)
 │   ├── hooks/
 │   │   └── useDiagnose.ts           # Custom hook — state management
 │   ├── components/
@@ -359,6 +383,86 @@ npm start
 
 ---
 
+## 🤝 Kontribusi
+
+Klinik UMKM adalah proyek open-source dan menyambut kontribusi dari siapa pun — baik itu perbaikan bug, fitur baru, dokumentasi, atau ide.
+
+### Panduan Branching
+
+| Branch | Tujuan | Base Branch |
+|--------|--------|-------------|
+| `main` | Produksi stabil | — |
+| `feat/*` | Fitur baru (contoh: `feat/dark-mode`, `feat/pdf-export`) | `main` |
+| `fix/*` | Perbaikan bug (contoh: `fix/hydration-error`, `fix/typo-readme`) | `main` |
+| `refactor/*` | Refactoring kode (contoh: `refactor/extract-hook`) | `main` |
+| `docs/*` | Perubahan dokumentasi | `main` |
+
+### Aturan Commit Message
+
+Gunakan format **konvensional** untuk memudahkan pelacakan:
+
+```
+<type>: <deskripsi singkat>
+
+<opsional: penjelasan lebih detail>
+```
+
+| Type | Kapan Digunakan | Contoh |
+|------|----------------|--------|
+| `feat` | Fitur baru | `feat: tambah simulasi bunga pinjaman` |
+| `fix` | Perbaikan bug | `fix: perbaiki overflow chat di mobile` |
+| `refactor` | Refactoring tanpa perubahan perilaku | `refactor: pindahkan state ke custom hook` |
+| `test` | Menambah/memperbaiki test | `test: tambah edge case diskon 0%` |
+| `docs` | Dokumentasi | `docs: tambah FAQ section` |
+| `chore` | Tugas teknis (deps, config, CI) | `chore: upgrade next.js ke 16.2` |
+| `style` | Perubahan format (spasi, prettier) | `style: hapus trailing whitespace` |
+
+> **Catatan:** Tulis commit message dalam **Bahasa Indonesia** untuk konsistensi dengan kodebase.
+
+### Standar Kode
+
+| Aturan | Keterangan |
+|--------|------------|
+| **Bahasa** | Kode, komentar, dan dokumentasi dalam **Bahasa Indonesia** |
+| **Arsitektur** | Ikuti Clean Architecture yang sudah ada — service di `lib/`, controller di `app/api/`, state di `app/hooks/`, UI di `app/components/` |
+| **TypeScript** | `strict: true` — hindari `: any` sebisa mungkin |
+| **Testing** | **WAJIB** — Setiap fungsi/logika baru harus punya unit test (minimal 2: happy path + edge case) |
+| **Linter** | Jalankan `npm run lint` sebelum commit — pastikan clean |
+| **Typecheck** | Jalankan `npm run typecheck` — pastikan zero error |
+
+### Alur Pull Request
+
+1. 🍴 **Fork & clone** repository
+2. 🌿 **Buat branch** dari `main` dengan prefix yang sesuai (`feat/`, `fix/`, dll)
+3. 💻 **Tulis kode Anda** — ikuti standar kode di atas
+4. 🧪 **Tambah test** untuk setiap perubahan
+5. ✅ **Verifikasi** dengan:
+   ```bash
+   npm run typecheck   # No type error
+   npm test            # 148/148 passing
+   npm run lint        # No lint error
+   ```
+6. 📤 **Push** ke branch Anda
+7. 📬 **Buat Pull Request** ke branch `main` dengan deskripsi:
+   - **Apa** yang diubah
+   - **Kenapa** diubah
+   - **Bagaimana** cara menguji
+   - Screenshot (jika perubahan UI)
+
+### Review PR
+
+Setiap PR akan direview dalam 1-3 hari kerja. Hal-hal yang diperiksa:
+
+- ✅ Kode mengikuti struktur Clean Architecture
+- ✅ Unit test tersedia dan lulus
+- ✅ Tidak ada penurunan test coverage
+- ✅ Tidak ada `console.log` yang tertinggal
+- ✅ TypeScript clean (`npm run typecheck`)
+
+> 💡 Punya ide besar? Buka [issue](https://github.com/erlangga-azhar/klinik-umkm/issues) dulu untuk diskusi sebelum mulai ngoding — biar tidak ada PR yang ditolak karena miss komunikasi.
+
+---
+
 ## 👤 Developer
 
 <p align="center">
@@ -378,6 +482,149 @@ npm start
     <img src="https://img.shields.io/badge/LinkedIn-erlangga--azhar-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white&labelColor=18181b" alt="LinkedIn" />
   </a>
 </p>
+
+---
+
+## ❓ FAQ — Pertanyaan Umum
+
+<details>
+<summary><strong>Apakah Klinik UMKM benar-benar gratis?</strong></summary>
+<br />
+
+**Ya, 100% gratis.** Tidak ada biaya tersembunyi, tidak perlu kartu kredit, tidak ada batasan pemakaian harian. Cukup buka [klinik-umkm.vercel.app](https://klinik-umkm.vercel.app) dan mulai diagnosis. Satu-satunya yang Anda butuhkan adalah koneksi internet.
+
+</details>
+
+<details>
+<summary><strong>Apakah saya perlu mendaftar akun?</strong></summary>
+<br />
+
+**Tidak perlu.** Klinik UMKM tidak menggunakan sistem akun, login, atau pendaftaran. Semua data Anda cukup di browser — kami tidak ingin mengelola database pengguna.
+
+</details>
+
+<details>
+<summary><strong>Bagaimana cara kerja AI diagnosis?</strong></summary>
+<br />
+
+Anda mengisi 4 data bisnis:
+
+1. **Nama Produk** — Apa yang Anda jual?
+2. **Modal per Unit (HPP)** — Berapa biaya produksi setiap unit?
+3. **Omzet per Bulan** — Berapa penghasilan kotor rata-rata?
+4. **Keluhan** — Ceritakan masalah bisnis Anda
+
+Data ini dikirim ke **Google Gemini 2.5 Flash** yang berperan sebagai *Growth Hacker & Mentor Bisnis*. AI akan mendiagnosis dari 4 aspek (Keuangan, Stok, Pemasaran, Layanan) dan meracik paket model langganan + kalkulasi BEP.
+
+Kalkulasi finansial (HPP, margin, BEP) **tidak dilakukan oleh AI** — melainkan oleh fungsi matematika murni di `financeService.ts` yang sudah teruji dengan 34 test case.
+
+</details>
+
+<details>
+<summary><strong>Apakah hasil diagnosis akurat?</strong></summary>
+<br />
+
+Hasil diagnosis bersifat **informatif dan konsultatif** — bukan jaminan mutlak keberhasilan bisnis. Akurasi sangat tergantung pada data yang Anda masukkan. *Garbage in, garbage out.*
+
+Yang **dijamin akurat**:
+- ✅ Kalkulasi HPP, margin, BEP (pure function, 148 test cases)
+- ✅ Simulasi diskon dan bunga pinjaman
+
+Yang **perlu validasi lebih lanjut**:
+- ⚠️ Rekomendasi harga jual dan nama paket (berbasis AI)
+- ⚠️ Strategi pemasaran yang disarankan
+
+</details>
+
+<details>
+<summary><strong>Data saya aman tidak? Apakah disimpan di server?</strong></summary>
+<br />
+
+**Aman dan privat.** Kami menerapkan *zero-storage policy*:
+
+- 🗄️ **Riwayat diagnosis** — Hanya disimpan di LocalStorage browser Anda, bukan di server
+- 🤖 **Data ke Gemini API** — Dikirim untuk diproses, **tidak disimpan** oleh Google setelah respons selesai (sesuai kebijakan Google AI)
+- 🗑️ **Hapus data** — Klik tombol "Hapus" di panel Rekam Medis, dan semua data Anda hilang
+
+Kami **tidak punya database**, tidak punya server penyimpanan, dan tidak bisa mengakses data Anda.
+
+</details>
+
+<details>
+<summary><strong>Kenapa pakai Google Gemini? Kenapa bukan ChatGPT?</strong></summary>
+<br />
+
+Kami memilih **Google Gemini 2.5 Flash** karena:
+
+- ⚡ **Kecepatan** — Latensi lebih rendah dibanding GPT-4, respons diagnosis dalam hitungan detik
+- 💰 **Gratis** — Tier gratis Gemini cukup mumpuni untuk use case ini
+- 🧠 **Konteks 1M token** — Bisa memproses riwayat chat panjang tanpa kehilangan konteks
+- 🇮🇩 **Bahasa Indonesia** — Performa natural dalam bahasa Indonesia
+
+> **Catatan:** Klinik UMKM adalah proyek open-source. Kode di `lib/geminiService.ts` bisa dimodifikasi siapa pun untuk menggunakan model AI lain (OpenAI, Claude, lokal LLM).
+
+</details>
+
+<details>
+<summary><strong>Kenapa chat cuma 3 ronde? Kok dibatesin?</strong></summary>
+<br />
+
+Batasan **3 ronde follow-up** diterapkan untuk:
+
+1. **Mencegah penyalahgunaan API** — Setiap chat tambahan memanggil Gemini API yang memakan biaya
+2. **Menjaga fokus** — Diagnosis awal sudah cukup komprehensif; 3 ronde cukup untuk klarifikasi
+3. **Mendorong aksi** — Daripada diskusi tak berujung, lebih baik segera eksekusi rekomendasi
+
+Setelah 3 ronde, sesi akan terkunci otomatis. Anda bisa memulai diagnosis baru kapan saja.
+
+</details>
+
+<details>
+<summary><strong>Bisa lanjutin chat yang sudah ditutup?</strong></summary>
+<br />
+
+**Tidak bisa.** Setelah sesi terkunci (3 ronde), chat tidak bisa dilanjutkan. Namun:
+
+- 💾 **Riwayat chat tetap tersimpan** di LocalStorage — Anda bisa membacanya kapan saja
+- 🔄 **Mulai diagnosis baru** dengan data yang sama untuk mendapatkan perspektif segar
+- 📋 **Draf WhatsApp** yang dihasilkan tetap bisa di-copy dan diedit
+
+</details>
+
+<details>
+<summary><strong>Apakah ada aplikasi mobile?</strong></summary>
+<br />
+
+Saat ini Klinik UMKM adalah **web app responsif** yang bisa diakses dari browser HP, tablet, dan desktop. Tidak ada aplikasi native (Android/iOS).
+
+Karena menggunakan LocalStorage, riwayat diagnosis **tidak akan tersinkronisasi antar perangkat**. Jika Anda berganti HP, riwayat sebelumnya tidak akan terbawa.
+
+</details>
+
+<details>
+<summary><strong>Saya ingin kontribusi / nambah fitur. Caranya?</strong></summary>
+<br />
+
+Klinik UMKM adalah proyek open-source! Lihat panduan kontribusi lengkap di section **[🤝 Kontribusi](#-kontribusi)** di atas — termasuk aturan branching, commit convention, standar kode, dan alur PR.
+
+Intinya: **Fork → Branch → Code → Test → PR.** 😊
+
+</details>
+
+<details>
+<summary><strong>Ada masalah / bug? Lapor ke mana?</strong></summary>
+<br />
+
+- 🐛 **GitHub Issues** — [Buka issue baru](https://github.com/erlangga-azhar/klinik-umkm/issues) (rekomendasi)
+- 📧 **DM Instagram** — [@erlng_zhr](https://www.instagram.com/erlng_zhr)
+- 💬 **Diskusi langsung** — [LinkedIn](https://linkedin.com/in/erlangga-azhar)
+
+Sertakan:
+- Langkah-langkah mereproduksi bug
+- Screenshot (jika relevan)
+- Browser dan versi yang digunakan
+
+</details>
 
 ---
 

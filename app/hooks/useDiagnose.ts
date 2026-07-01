@@ -96,6 +96,8 @@ export function useDiagnose(): UseDiagnoseReturn {
   // ==================================================================
   useEffect(() => {
     setMounted(true);
+    // typeof window guard sebagai defense-in-depth untuk SSR
+    if (typeof window === 'undefined') return;
     try {
       const saved = localStorage.getItem('klinik-umkm-history');
       if (saved) {
@@ -105,7 +107,7 @@ export function useDiagnose(): UseDiagnoseReturn {
         }
       }
     } catch (e: any) {
-      // localStorage tidak tersedia atau data rusak
+      // localStorage tidak tersedia atau data rusak — abaikan
     }
   }, []);
 
@@ -128,9 +130,13 @@ export function useDiagnose(): UseDiagnoseReturn {
     };
     setHistory(prev => {
       const updated = [item, ...prev].slice(0, 20);
-      try {
-        localStorage.setItem('klinik-umkm-history', JSON.stringify(updated));
-      } catch (e: any) {}
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('klinik-umkm-history', JSON.stringify(updated));
+        } catch (e: any) {
+          // Quota exceeded atau localStorage tidak tersedia
+        }
+      }
       return updated;
     });
     setCurrentHistoryId(item.id);
@@ -144,9 +150,13 @@ export function useDiagnose(): UseDiagnoseReturn {
         }
         return item;
       });
-      try {
-        localStorage.setItem('klinik-umkm-history', JSON.stringify(updated));
-      } catch (e: any) {}
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('klinik-umkm-history', JSON.stringify(updated));
+        } catch (e: any) {
+          // Quota exceeded atau localStorage tidak tersedia
+        }
+      }
       return updated;
     });
   }, [currentHistoryId]);
@@ -169,9 +179,13 @@ export function useDiagnose(): UseDiagnoseReturn {
 
   const handleClearHistory = useCallback(() => {
     setHistory([]);
-    try {
-      localStorage.removeItem('klinik-umkm-history');
-    } catch (e: any) {}
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem('klinik-umkm-history');
+      } catch (e: any) {
+        // localStorage tidak tersedia
+      }
+    }
   }, []);
 
   // ==================================================================
