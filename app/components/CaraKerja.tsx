@@ -27,7 +27,7 @@ export default function CaraKerja() {
               <FileText className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
             </div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">Input Gejala Bisnis</h3>
-            <p className="text-sm text-slate-500 dark:text-zinc-400 leading-relaxed max-w-[240px]">
+            <p className="text-sm text-slate-500 dark:text-zinc-400 leading-relaxed max-w-60">
               Masukkan nama produk, HPP per unit, harga jual saat ini, dan keluhan utama
               yang Anda rasakan.
             </p>
@@ -41,7 +41,7 @@ export default function CaraKerja() {
               <BrainCircuit className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
             </div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">AI Analisis &amp; Hitung</h3>
-            <p className="text-sm text-slate-500 dark:text-zinc-400 leading-relaxed max-w-[240px]">
+            <p className="text-sm text-slate-500 dark:text-zinc-400 leading-relaxed max-w-60">
               Dokter AI (Gemini 2.5 Flash) memproses data Anda: struktur biaya, margin,
               BEP, plus rekomendasi model langganan yang sesuai.
             </p>
@@ -55,7 +55,7 @@ export default function CaraKerja() {
               <Send className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
             </div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">Resep + Draf WA Siap</h3>
-            <p className="text-sm text-slate-500 dark:text-zinc-400 leading-relaxed max-w-[240px]">
+            <p className="text-sm text-slate-500 dark:text-zinc-400 leading-relaxed max-w-60">
               Dapatkan laporan diagnosis, kalkulasi finansial transparan, plus draf
               WhatsApp yang tinggal Anda kirim ke pelanggan.
             </p>

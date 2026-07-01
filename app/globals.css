@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
+/* VS Code: abaikan unknown at-rule warning — ini native @directive Tailwind v4 */
+/* stylelint-disable-next-line at-rule-no-unknown */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* stylelint-disable-next-line at-rule-no-unknown */
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);

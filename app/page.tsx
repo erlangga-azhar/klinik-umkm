@@ -205,7 +205,7 @@ export default function KlinikUMKM() {
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={scrollToForm}
-              className="group relative inline-flex items-center gap-3 bg-linear-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-bold text-lg py-4 px-8 rounded-2xl transition-all duration-300 shadow-[0_8px_30px_rgb(16,185,129,0.25)] hover:shadow-[0_12px_40px_rgb(16,185,129,0.35)] active:scale-[0.97] hover:scale-[1.02]"
+              className="group relative inline-flex items-center gap-3 bg-linear-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-bold text-lg py-4 px-8 rounded-2xl transition-all duration-300 shadow-[0_8px_30px_rgb(16,185,129,0.25)] hover:shadow-[0_12px_40px_rgb(16,185,129,0.35)] active:scale-[0.97] hover:scale-102"
             >
               <span className="absolute inset-0 rounded-2xl ring-2 ring-emerald-400/40 ring-offset-2 ring-offset-slate-50 dark:ring-offset-zinc-950 group-hover:ring-emerald-500/60 transition-all duration-300" />
               <Syringe className="w-6 h-6" />
@@ -256,7 +256,7 @@ export default function KlinikUMKM() {
               return (
                 <div
                   key={idx}
-                  className="group relative bg-white/70 dark:bg-zinc-900/75 border border-slate-100/80 dark:border-zinc-800/60 backdrop-blur-md rounded-3xl p-5 sm:p-6 shadow-[0_2px_16px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgb(0,0,0,0.15)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-1"
+                  className="group relative bg-white/70 dark:bg-zinc-900/75 border border-slate-100/80 dark:border-zinc-800/60 backdrop-blur-md rounded-3xl p-5 sm:p-6 shadow-[0_2px_16px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgb(0,0,0,0.15)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-1 hover:scale-102"
                 >
                   <div className="absolute inset-0 rounded-3xl bg-linear-to-b from-white/40 dark:from-white/5 to-transparent pointer-events-none" />
 
