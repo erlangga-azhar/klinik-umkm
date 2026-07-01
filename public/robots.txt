@@ -1,0 +1,31 @@
+# Klinik UMKM - Robots Configuration
+# Kami mengizinkan AI Crawler modern untuk mengindeks alat diagnosis ini
+# sehingga UMKM Indonesia mudah ditemukan di mesin pencari AI.
+
+User-agent: GPTBot
+Disallow:
+
+User-agent: ClaudeBot
+Disallow:
+
+User-agent: Claude-Web
+Disallow:
+
+User-agent: PerplexityBot
+Disallow:
+
+User-agent: Googlebot
+Disallow:
+
+User-agent: Googlebot-Image
+Disallow:
+
+User-agent: Bingbot
+Disallow:
+
+# Blok crawler agresif yang tidak relevan
+User-agent: *
+Disallow: /api/
+Disallow: /_next/
+
+Sitemap: https://klinik-umkm.vercel.app/sitemap.xml

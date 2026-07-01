@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- ============================================================ -->
+  <!-- Halaman Utama - Klinik UMKM                                   -->
+  <!-- ============================================================ -->
+  <url>
+    <loc>https://klinik-umkm.vercel.app/</loc>
+    <lastmod>2026-07-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+
+    <!-- OG Image -->
+    <image:image>
+      <image:loc>https://klinik-umkm.vercel.app/og-image.png</image:loc>
+      <image:title>Klinik UMKM - Diagnosis Bisnis &amp; Racik Model Langganan Anti Boncos</image:title>
+      <image:caption>Alat diagnosis finansial berbasis AI untuk UMKM Indonesia. Analisis HPP, margin, BEP, dan resep model langganan.</image:caption>
+    </image:image>
+  </url>
+
+</urlset>
