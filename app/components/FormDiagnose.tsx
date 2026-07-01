@@ -116,7 +116,7 @@ export default function FormDiagnose({
 
       <button
         type="submit"
-        className="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-200 shadow-[0_4px_20px_rgb(16,185,129,0.2)] hover:shadow-[0_6px_30px_rgb(16,185,129,0.3)] active:scale-[0.98] flex items-center justify-center gap-2.5"
+        className="w-full bg-linear-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-200 shadow-[0_4px_20px_rgb(16,185,129,0.2)] hover:shadow-[0_6px_30px_rgb(16,185,129,0.3)] active:scale-[0.98] flex items-center justify-center gap-2.5"
       >
         <Syringe className="w-5 h-5" />
         Cek Kesehatan Bisnis

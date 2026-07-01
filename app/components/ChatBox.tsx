@@ -63,7 +63,7 @@ export default function ChatBox({
       </div>
 
       {/* Chat Logs */}
-      <div className="space-y-3 mb-4 max-h-[400px] overflow-y-auto pr-1">
+      <div className="space-y-3 mb-4 max-h-100 overflow-y-auto pr-1">
         {chatLogs.length === 0 && (
           <div className="text-center py-6">
             <p className="text-sm text-slate-400 dark:text-zinc-500 italic">
@@ -76,7 +76,7 @@ export default function ChatBox({
           <div key={idx} className="space-y-2">
             {/* Bubble User */}
             <div className="flex justify-end">
-              <div className="max-w-[85%] sm:max-w-[75%] bg-gradient-to-br from-emerald-500 to-emerald-600 text-white text-sm rounded-2xl rounded-br-md px-4 py-2.5 shadow-[0_2px_12px_rgb(16,185,129,0.12)]">
+              <div className="max-w-[85%] sm:max-w-[75%] bg-linear-to-br from-emerald-500 to-emerald-600 text-white text-sm rounded-2xl rounded-br-md px-4 py-2.5 shadow-[0_2px_12px_rgb(16,185,129,0.12)]">
                 <p className="leading-relaxed">{log.question}</p>
               </div>
             </div>
@@ -108,7 +108,7 @@ export default function ChatBox({
       {/* Session Closed Banner */}
       {isSessionClosed && (
         <div className="mb-4 p-4 bg-slate-50/90 dark:bg-zinc-800/90 border border-slate-200/80 dark:border-zinc-700/80 rounded-2xl flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center flex-shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center shrink-0">
             <LockKeyhole className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           </div>
           <div>
@@ -133,7 +133,7 @@ export default function ChatBox({
         <button
           type="submit"
           disabled={isSessionClosed || chatLoading || !chatQuestion.trim()}
-          className="w-11 h-11 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white flex items-center justify-center transition-all duration-200 shadow-[0_4px_16px_rgb(16,185,129,0.15)] hover:shadow-[0_6px_24px_rgb(16,185,129,0.25)] active:scale-[0.92] disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
+          className="w-11 h-11 rounded-2xl bg-linear-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white flex items-center justify-center transition-all duration-200 shadow-[0_4px_16px_rgb(16,185,129,0.15)] hover:shadow-[0_6px_24px_rgb(16,185,129,0.25)] active:scale-[0.92] disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
         >
           {chatLoading ? (
             <div className="w-4 h-4 border-2 border-white/60 border-t-white rounded-full animate-spin" />

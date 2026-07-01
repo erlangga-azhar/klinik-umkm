@@ -89,7 +89,7 @@ export default function RiwayatPanel({ history, onMuat, onClearHistory }: Riwaya
             className="w-full text-left p-3.5 rounded-2xl border border-slate-100/80 dark:border-zinc-800/80 bg-white/60 dark:bg-zinc-800/40 hover:bg-emerald-50/60 dark:hover:bg-emerald-900/30 hover:border-emerald-200/60 dark:hover:border-emerald-800/50 transition-all duration-200 flex items-center justify-between gap-3 group shadow-[0_2px_8px_rgb(0,0,0,0.02)]"
           >
             <div className="min-w-0 flex-1 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-emerald-100/60 dark:bg-emerald-900/40 flex items-center justify-center flex-shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-emerald-100/60 dark:bg-emerald-900/40 flex items-center justify-center shrink-0">
                 <FileText className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
@@ -101,7 +101,7 @@ export default function RiwayatPanel({ history, onMuat, onClearHistory }: Riwaya
                 </span>
               </div>
             </div>
-            <ArrowRight className="w-4 h-4 text-slate-300 dark:text-zinc-600 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+            <ArrowRight className="w-4 h-4 text-slate-300 dark:text-zinc-600 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all shrink-0" />
           </button>
         ))}
       </div>

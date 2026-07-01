@@ -218,7 +218,7 @@ export default function FooterLegal() {
                 <div className="mt-6 pt-4 border-t border-slate-100 dark:border-zinc-800">
                   <button
                     onClick={closeModal}
-                    className="w-full py-3 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-bold rounded-2xl transition-all duration-200 text-sm shadow-[0_4px_16px_rgb(16,185,129,0.15)] active:scale-[0.98]"
+                    className="w-full py-3 bg-linear-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-bold rounded-2xl transition-all duration-200 text-sm shadow-[0_4px_16px_rgb(16,185,129,0.15)] active:scale-[0.98]"
                   >
                     Tutup
                   </button>

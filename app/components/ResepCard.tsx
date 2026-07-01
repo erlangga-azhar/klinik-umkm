@@ -38,7 +38,7 @@ export default function ResepCard({ report, onKonsultasiUlang }: ResepCardProps)
 
       {/* Kartu Resep Utama */}
       <div className="bg-white/70 dark:bg-zinc-900/75 border-2 border-emerald-400/70 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] rounded-3xl p-6 sm:p-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] rounded-bl-2xl shadow-[0_2px_12px_rgb(16,185,129,0.2)]">
+        <div className="absolute top-0 right-0 bg-linear-to-r from-emerald-500 to-emerald-600 text-white px-5 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] rounded-bl-2xl shadow-[0_2px_12px_rgb(16,185,129,0.2)]">
           Resep Utama
         </div>
 
@@ -64,7 +64,7 @@ export default function ResepCard({ report, onKonsultasiUlang }: ResepCardProps)
 
         {/* Kalkulator Finansial Premium */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5 border-t border-slate-100 dark:border-zinc-800 pt-5">
-          <div className="bg-gradient-to-br from-slate-50 to-white dark:from-zinc-800/50 dark:to-zinc-900/50 rounded-2xl border border-slate-100/80 dark:border-zinc-800/80 p-4 text-center shadow-[0_2px_8px_rgb(0,0,0,0.02)]">
+          <div className="bg-linear-to-br from-slate-50 to-white dark:from-zinc-800/50 dark:to-zinc-900/50 rounded-2xl border border-slate-100/80 dark:border-zinc-800/80 p-4 text-center shadow-[0_2px_8px_rgb(0,0,0,0.02)]">
             <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-zinc-500 mb-1.5">
               Harga Jual Baru
             </span>
@@ -72,7 +72,7 @@ export default function ResepCard({ report, onKonsultasiUlang }: ResepCardProps)
               Rp {report.estimasi_harga_jual_baru?.toLocaleString('id-ID')}
             </span>
           </div>
-          <div className="bg-gradient-to-br from-emerald-50/50 to-white dark:from-emerald-950/30 dark:to-zinc-900/50 rounded-2xl border border-emerald-100/80 dark:border-emerald-900/60 p-4 text-center shadow-[0_2px_8px_rgb(0,0,0,0.02)]">
+          <div className="bg-linear-to-br from-emerald-50/50 to-white dark:from-emerald-950/30 dark:to-zinc-900/50 rounded-2xl border border-emerald-100/80 dark:border-emerald-900/60 p-4 text-center shadow-[0_2px_8px_rgb(0,0,0,0.02)]">
             <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-zinc-500 mb-1.5">
               Margin Kotor
             </span>
@@ -80,7 +80,7 @@ export default function ResepCard({ report, onKonsultasiUlang }: ResepCardProps)
               +{report.analisis_finansial?.margin_persen}%
             </span>
           </div>
-          <div className="bg-gradient-to-br from-slate-50 to-white dark:from-zinc-800/50 dark:to-zinc-900/50 rounded-2xl border border-slate-100/80 dark:border-zinc-800/80 p-4 text-center shadow-[0_2px_8px_rgb(0,0,0,0.02)]">
+          <div className="bg-linear-to-br from-slate-50 to-white dark:from-zinc-800/50 dark:to-zinc-900/50 rounded-2xl border border-slate-100/80 dark:border-zinc-800/80 p-4 text-center shadow-[0_2px_8px_rgb(0,0,0,0.02)]">
             <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-zinc-500 mb-1.5">
               Target Pelanggan
             </span>
@@ -98,7 +98,7 @@ export default function ResepCard({ report, onKonsultasiUlang }: ResepCardProps)
           Amunisi Pemasaran
         </h3>
 
-        <div className="relative bg-gradient-to-br from-slate-50 to-white dark:from-zinc-800/50 dark:to-zinc-900/50 rounded-2xl border border-slate-100/80 dark:border-zinc-800/80 p-5 shadow-[0_2px_8px_rgb(0,0,0,0.02)]">
+        <div className="relative bg-linear-to-br from-slate-50 to-white dark:from-zinc-800/50 dark:to-zinc-900/50 rounded-2xl border border-slate-100/80 dark:border-zinc-800/80 p-5 shadow-[0_2px_8px_rgb(0,0,0,0.02)]">
           <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500/30 rounded-l-2xl" />
           <p className="text-sm text-slate-600 dark:text-zinc-400 italic leading-relaxed pl-3">
             &ldquo;{report.draft_whatsapp}&rdquo;
@@ -109,7 +109,7 @@ export default function ResepCard({ report, onKonsultasiUlang }: ResepCardProps)
           <a
             href={`https://wa.me/?text=${encodeURIComponent(report.draft_whatsapp)}`}
             target="_blank" rel="noopener noreferrer"
-            className="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-bold text-center py-3.5 px-4 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2.5 shadow-[0_4px_16px_rgb(16,185,129,0.15)] hover:shadow-[0_6px_24px_rgb(16,185,129,0.25)] active:scale-[0.98]"
+            className="flex-1 bg-linear-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-bold text-center py-3.5 px-4 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2.5 shadow-[0_4px_16px_rgb(16,185,129,0.15)] hover:shadow-[0_6px_24px_rgb(16,185,129,0.25)] active:scale-[0.98]"
           >
             <Send className="w-4 h-4" />
             Bagikan ke WhatsApp
