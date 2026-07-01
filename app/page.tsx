@@ -5,7 +5,7 @@ import {
   BrainCircuit,
   HeartPulse, ArrowDownToLine, Syringe, Sparkles, ScrollText,
   AlertTriangle, Wallet, TrendingDown, Boxes, MessageSquareX,
-  Sun, Moon,
+  Sun, Moon, Clock, ShieldAlert,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import FormDiagnose from '@/app/components/FormDiagnose';
@@ -65,6 +65,7 @@ export default function KlinikUMKM() {
     handleChatSubmit,
     history, muatDariRiwayat, handleClearHistory,
     mounted, scrollToForm, formRef,
+    retryAfter,
   } = useDiagnose();
 
   // Parallax refs — direct DOM manipulation untuk performa tinggi
@@ -296,11 +297,40 @@ export default function KlinikUMKM() {
       <section className="px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28">
         <div className="max-w-3xl mx-auto">
 
-          {/* Error notification */}
+          {/* Error notification — with live countdown jika rate limited */}
           {error && (
-            <div className="mb-6 p-4 bg-rose-50/80 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/60 backdrop-blur-md text-rose-700 dark:text-rose-300 rounded-2xl flex items-start gap-3 shadow-[0_4px_20px_rgb(0,0,0,0.03)]">
-              <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
-              <p className="text-sm font-medium">{error}</p>
+            <div className={`mb-6 p-4 backdrop-blur-md rounded-2xl flex items-start gap-3 shadow-[0_4px_20px_rgb(0,0,0,0.03)] ${
+              retryAfter !== null
+                ? 'bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/60 text-amber-800 dark:text-amber-200'
+                : 'bg-rose-50/80 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/60 text-rose-700 dark:text-rose-300'
+            }`}>
+              {retryAfter !== null ? (
+                <ShieldAlert className="w-5 h-5 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+              ) : (
+                <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium">{error}</p>
+                {retryAfter !== null && (
+                  <div className="mt-2 flex items-center gap-2.5">
+                    <div className="flex items-center gap-1.5 text-amber-700 dark:text-amber-300 font-bold">
+                      <Clock className="w-4 h-4" />
+                      <span className="tabular-nums text-base">
+                        {Math.floor(retryAfter / 60)}:{String(retryAfter % 60).padStart(2, '0')}
+                      </span>
+                    </div>
+                    <div className="flex-1 h-1.5 bg-amber-200/60 dark:bg-amber-800/40 rounded-full overflow-hidden max-w-32">
+                      <div
+                        className="h-full bg-linear-to-r from-amber-500 to-amber-400 rounded-full transition-all duration-1000 ease-linear"
+                        style={{ width: `${Math.max(0, Math.min(100, (retryAfter / 3600) * 100))}%` }}
+                      />
+                    </div>
+                    <span className="text-[10px] text-amber-600/70 dark:text-amber-400/70 font-medium uppercase tracking-wider">
+                      {retryAfter > 60 ? `${Math.ceil(retryAfter / 60)} menit` : 'hitungan detik'}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 

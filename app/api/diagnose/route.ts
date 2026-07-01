@@ -9,7 +9,7 @@ import {
   buildChatPrompt,
   SYSTEM_INSTRUCTION_DIAGNOSIS,
   SYSTEM_INSTRUCTION_CHAT,
-  isRateLimited,
+  checkRateLimit,
   getClientIP,
   buildRateLimitError,
 } from '@/lib';
@@ -28,11 +28,13 @@ export async function POST(request: any) {
     // ===================================================================
     // Cegah penyalahgunaan token Gemini dengan membatasi 3 request per jam
     // per IP address. Eksekusi dihentikan SEBELUM hit Gemini API.
+    // Response menyertakan retryAfter agar frontend bisa countdown.
     // ===================================================================
     const clientIP = getClientIP(request);
-    if (isRateLimited(clientIP)) {
-      const { error, status } = buildRateLimitError();
-      return NextResponse.json({ error }, { status });
+    const { limited: isLimited, retryAfter } = checkRateLimit(clientIP);
+    if (isLimited) {
+      const { error, status, retryAfter: retry } = buildRateLimitError(retryAfter);
+      return NextResponse.json({ error, retryAfter: retry }, { status });
     }
 
     const payload = await request.json();

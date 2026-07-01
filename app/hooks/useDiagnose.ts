@@ -53,6 +53,9 @@ interface UseDiagnoseReturn {
   muatDariRiwayat: (item: HistoryItem) => void;
   handleClearHistory: () => void;
 
+  // Rate Limit Countdown
+  retryAfter: number | null;
+
   // UI Utilities
   mounted: boolean;
   scrollToForm: () => void;
@@ -76,6 +79,28 @@ export function useDiagnose(): UseDiagnoseReturn {
   const [mounted, setMounted] = useState<boolean>(false);
 
   // Chat 3 Ronde States
+  // Rate limit timer — ditrigger oleh 429 response
+  const [retryAfter, setRetryAfter] = useState<number | null>(null);
+
+  // ==================================================================
+  // COUNTDOWN TIMER — live tick setiap 1 detik
+  // ==================================================================
+  useEffect(() => {
+    if (retryAfter === null || retryAfter <= 0) return;
+
+    const timer = setInterval(() => {
+      setRetryAfter((prev) => {
+        if (prev === null || prev <= 1) {
+          clearInterval(timer);
+          return null;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [retryAfter !== null]);
+
   const [chatLogs, setChatLogs] = useState<ChatLogEntry[]>([]);
   const [followUpCount, setFollowUpCount] = useState<number>(0);
   const [isSessionClosed, setIsSessionClosed] = useState<boolean>(false);
@@ -232,8 +257,9 @@ export function useDiagnose(): UseDiagnoseReturn {
 
       const data = await res.json();
 
-      // --- 429 Too Many Requests — tampilkan pesan khusus ---
+      // --- 429 Too Many Requests — simpan retryAfter, tampilkan countdown ---
       if (res.status === 429) {
+        setRetryAfter(data.retryAfter || 300);
         throw new Error(data.error || 'Terlalu banyak permintaan. Silakan coba lagi dalam beberapa menit.');
       }
 
@@ -290,8 +316,9 @@ export function useDiagnose(): UseDiagnoseReturn {
 
       const data = await res.json();
 
-      // --- 429 Too Many Requests pada chat — tampilkan pesan khusus ---
+      // --- 429 Too Many Requests pada chat — simpan retryAfter, countdown ---
       if (res.status === 429) {
+        setRetryAfter(data.retryAfter || 300);
         const failedCount = followUpCount + 1;
         const failedLogs: ChatLogEntry[] = [
           ...chatLogs,
@@ -359,6 +386,7 @@ export function useDiagnose(): UseDiagnoseReturn {
     history,
     muatDariRiwayat,
     handleClearHistory,
+    retryAfter,
     mounted,
     scrollToForm,
     formRef,

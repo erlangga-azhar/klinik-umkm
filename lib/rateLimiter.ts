@@ -46,10 +46,10 @@ function cleanupExpiredEntries(): void {
 
 /**
  * Mengecek apakah IP tertentu sudah melebihi batas rate limit.
- * Jika sudah melebihi, return true (terlalu banyak request).
- * Jika masih dalam batas, catat request baru dan return false.
+ * Jika sudah melebihi, return object { limited: true, retryAfter }.
+ * Jika masih dalam batas, catat request baru dan return { limited: false }.
  */
-export function isRateLimited(ip: string): boolean {
+export function checkRateLimit(ip: string): { limited: boolean; retryAfter?: number } {
   const now = Date.now();
 
   // Pembersihan berkala
@@ -63,20 +63,45 @@ export function isRateLimited(ip: string): boolean {
   if (!entry) {
     // Belum pernah request — buat entry baru
     rateLimitStore.set(ip, { timestamps: [now] });
-    return false;
+    return { limited: false };
   }
 
   // Hapus timestamp yang sudah expired
   entry.timestamps = entry.timestamps.filter((ts) => now - ts < WINDOW_MS);
 
   if (entry.timestamps.length >= MAX_REQUESTS) {
-    // Sudah melebihi batas
-    return true;
+    // Sudah melebihi batas — hitung berapa detik lagi reset
+    const retryAfter = getRetryAfterSeconds(ip);
+    return { limited: true, retryAfter };
   }
 
   // Dalam batas — catat request baru
   entry.timestamps.push(now);
-  return false;
+  return { limited: false };
+}
+
+/**
+ * Versi backward-compatible — return boolean.
+ */
+export function isRateLimited(ip: string): boolean {
+  return checkRateLimit(ip).limited;
+}
+
+/**
+ * Menghitung berapa detik lagi hingga rate limit reset untuk IP tertentu.
+ * Berdasarkan timestamp paling awal yang masih dalam window + WINDOW_MS.
+ */
+export function getRetryAfterSeconds(ip: string): number {
+  const entry = rateLimitStore.get(ip);
+  if (!entry || entry.timestamps.length === 0) return 0;
+
+  const now = Date.now();
+  // Timestamp tertua akan expire paling awal
+  const oldestTimestamp = Math.min(...entry.timestamps);
+  const expiresAt = oldestTimestamp + WINDOW_MS;
+  const remaining = Math.max(0, Math.ceil((expiresAt - now) / 1000));
+
+  return remaining;
 }
 
 /**
@@ -106,11 +131,13 @@ export function getClientIP(request: any): string {
 
 /**
  * Membuat pesan error 429 yang konsisten.
+ * Jika retryAfter diketahui, sertakan dalam response.
  */
-export function buildRateLimitError(): { error: string; status: number } {
+export function buildRateLimitError(retryAfter?: number): { error: string; status: number; retryAfter?: number } {
   return {
     error: 'Terlalu banyak permintaan. Silakan coba lagi dalam beberapa menit.',
     status: 429,
+    retryAfter,
   };
 }
 

@@ -37,7 +37,9 @@ export {
 
 export {
   isRateLimited,
+  checkRateLimit,
   getClientIP,
   buildRateLimitError,
+  getRetryAfterSeconds,
   resetRateLimitStore,
 } from './rateLimiter';
