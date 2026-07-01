@@ -139,11 +139,15 @@ export async function POST(request: any) {
       aiData.jumlah_unit_per_paket = 1;
     }
 
-    // Force string — jika objek {keuangan, stok, ...}, konversi ke teks
-    if (!aiData.diagnosis) {
-      aiData.diagnosis = "Data diagnosis tidak tersedia.";
-    } else if (typeof aiData.diagnosis === 'object') {
-      aiData.diagnosis = Object.values(aiData.diagnosis).join('\n\n');
+    // Diagnosis sekarang berupa objek terstruktur {keuangan, stok, pemasaran, layanan}
+    // dari Gemini JSON mode. Pastikan struktur tetap valid, bukan string.
+    if (!aiData.diagnosis || typeof aiData.diagnosis === 'string') {
+      aiData.diagnosis = {
+        keuangan: aiData.diagnosis || "Data diagnosis tidak tersedia.",
+        stok: "Data diagnosis tidak tersedia.",
+        pemasaran: "Data diagnosis tidak tersedia.",
+        layanan: "Data diagnosis tidak tersedia.",
+      };
     }
 
     if (!aiData.nama_ide_pivot) {

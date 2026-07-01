@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import {
   MessageCircle, AlertTriangle, FileText,
-  Send, Copy, Check,
+  Send, Copy, Check, Wallet, Package, TrendingUp, Headphones,
 } from 'lucide-react';
 
 interface ResepCardProps {
@@ -29,15 +29,82 @@ export default function ResepCard({ report, onKonsultasiUlang }: ResepCardProps)
     }
   };
 
+  // Ikon & metadata untuk setiap aspek diagnosis
+  const ASPEK_DIAGNOSIS = [
+    {
+      key: 'keuangan' as const,
+      label: 'Keuangan',
+      icon: Wallet,
+      desc: report?.diagnosis?.keuangan || 'Data tidak tersedia.',
+      gradient: 'from-emerald-600 to-teal-600',
+      borderGlow: 'before:bg-linear-to-br before:from-emerald-500/20 before:to-teal-500/5',
+      iconBg: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
+    },
+    {
+      key: 'stok' as const,
+      label: 'Stok & Produk',
+      icon: Package,
+      desc: report?.diagnosis?.stok || 'Data tidak tersedia.',
+      gradient: 'from-sky-600 to-blue-600',
+      borderGlow: 'before:bg-linear-to-br before:from-sky-500/20 before:to-blue-500/5',
+      iconBg: 'bg-sky-100 dark:bg-sky-900/40 text-sky-600 dark:text-sky-400',
+    },
+    {
+      key: 'pemasaran' as const,
+      label: 'Pemasaran',
+      icon: TrendingUp,
+      desc: report?.diagnosis?.pemasaran || 'Data tidak tersedia.',
+      gradient: 'from-amber-600 to-orange-600',
+      borderGlow: 'before:bg-linear-to-br before:from-amber-500/20 before:to-orange-500/5',
+      iconBg: 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400',
+    },
+    {
+      key: 'layanan' as const,
+      label: 'Layanan',
+      icon: Headphones,
+      desc: report?.diagnosis?.layanan || 'Data tidak tersedia.',
+      gradient: 'from-violet-600 to-purple-600',
+      borderGlow: 'before:bg-linear-to-br before:from-violet-500/20 before:to-purple-500/5',
+      iconBg: 'bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400',
+    },
+  ];
+
   return (
     <div className="space-y-5">
-      {/* Kartu Diagnosis */}
-      <div className="bg-white/70 dark:bg-zinc-900/75 border border-slate-100/80 dark:border-zinc-800/60 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.03)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] rounded-3xl p-6">
-        <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-amber-700 dark:text-amber-300 mb-3 flex items-center gap-2">
-          <div className="w-1 h-1 rounded-full bg-amber-500" />
-          Hasil Diagnosis Sistem
-        </h3>
-        <p className="text-slate-700 dark:text-zinc-300 leading-relaxed font-medium">{report.diagnosis}</p>
+      {/* 4 Premium Grid Cards — Diagnosis Terstruktur */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {ASPEK_DIAGNOSIS.map((aspek) => {
+          const IconComp = aspek.icon;
+          return (
+            <div
+              key={aspek.key}
+              className={`group relative bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md rounded-3xl p-5 sm:p-6 border border-slate-100/60 dark:border-zinc-800/50 shadow-[0_2px_16px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgb(0,0,0,0.12)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all duration-300 hover:-translate-y-0.5 overflow-hidden ${aspek.borderGlow}`}
+            >
+              {/* Glow corner accent */}
+              <div className={`absolute -top-8 -right-8 w-24 h-24 rounded-full ${aspek.borderGlow} opacity-30 blur-2xl group-hover:opacity-60 transition-opacity duration-500`} />
+
+              <div className="relative z-10">
+                {/* Header: icon + label */}
+                <div className="flex items-center gap-3 mb-3">
+                  <div className={`w-10 h-10 rounded-2xl ${aspek.iconBg} flex items-center justify-center shadow-[0_2px_8px_rgb(0,0,0,0.04)]`}>
+                    <IconComp className="w-5 h-5" />
+                  </div>
+                  <h3 className={`text-sm font-extrabold bg-linear-to-r ${aspek.gradient} bg-clip-text text-transparent`}>
+                    {aspek.label}
+                  </h3>
+                </div>
+
+                {/* Body text */}
+                <p className="text-sm text-slate-600 dark:text-zinc-400 leading-relaxed">
+                  {aspek.desc}
+                </p>
+              </div>
+
+              {/* Bottom border accent */}
+              <div className={`absolute bottom-0 left-4 right-4 h-0.5 rounded-full bg-linear-to-r ${aspek.gradient} opacity-0 group-hover:opacity-30 transition-opacity duration-300`} />
+            </div>
+          );
+        })}
       </div>
 
       {/* Kartu Resep Utama */}

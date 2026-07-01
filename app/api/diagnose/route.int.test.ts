@@ -50,11 +50,16 @@ describe('POST /api/diagnose — Integration Tests', () => {
   });
 
   // -----------------------------------------------------------------------
-  // Test 1: Valid input → AI mengembalikan JSON valid
+  // Test 1: Valid input → AI mengembalikan JSON dengan diagnosis terstruktur
   // -----------------------------------------------------------------------
-  it('mengembalikan response 200 dengan struktur JSON yang benar', async () => {
+  it('mengembalikan response 200 dengan diagnosis terstruktur {keuangan, stok, pemasaran, layanan}', async () => {
     const aiResponse = JSON.stringify({
-      diagnosis: 'Bisnis Anda mengalami margin tipis karena HPP terlalu tinggi.',
+      diagnosis: {
+        keuangan: 'Margin tipis karena HPP terlalu tinggi, kamu subsidi pembeli tiap transaksi.',
+        stok: 'Stok bahan baku perlu diatur lebih efisien agar tidak ada sisa hangus.',
+        pemasaran: 'Harga jual terlalu murah dibanding kompetitor — naikin value, jangan cuma lomba diskon.',
+        layanan: 'Waktu habis untuk bales chat nanyain harga doang. Buat sistem pesan otomatis.',
+      },
       nama_ide_pivot: 'Paket Kopi 20 Gelas',
       deskripsi_pivot: 'Jual paket 20 gelas kopi dengan harga spesial langganan.',
       estimasi_harga_jual_baru: 150000,
@@ -77,6 +82,14 @@ describe('POST /api/diagnose — Integration Tests', () => {
 
     expect(status).toBe(200);
     expect(data).toHaveProperty('diagnosis');
+    // Diagnosis adalah objek terstruktur
+    expect(typeof data.diagnosis).toBe('object');
+    expect(data.diagnosis).toHaveProperty('keuangan');
+    expect(data.diagnosis).toHaveProperty('stok');
+    expect(data.diagnosis).toHaveProperty('pemasaran');
+    expect(data.diagnosis).toHaveProperty('layanan');
+    expect(typeof data.diagnosis.keuangan).toBe('string');
+    expect(data.diagnosis.keuangan).toMatch(/margin tipis/i);
     expect(data).toHaveProperty('nama_ide_pivot', 'Paket Kopi 20 Gelas');
     expect(data).toHaveProperty('estimasi_harga_jual_baru', 150000);
     expect(data).toHaveProperty('jumlah_unit_per_paket', 20);
@@ -118,15 +131,20 @@ describe('POST /api/diagnose — Integration Tests', () => {
     expect(data.jumlah_unit_per_paket).toBe(1);
     // total_hpp_paket = 10.000 * 1 = 10.000
     expect(data.total_hpp_paket).toBe(10000);
-    // Diagnosa berisi pesan fallback
-    expect(data.diagnosis).toContain('Maaf');
+    // Diagnosis berupa objek terstruktur fallback
+    expect(typeof data.diagnosis).toBe('object');
+    expect(data.diagnosis).toHaveProperty('keuangan');
+    expect(data.diagnosis).toHaveProperty('stok');
+    expect(data.diagnosis).toHaveProperty('pemasaran');
+    expect(data.diagnosis).toHaveProperty('layanan');
+    expect(data.diagnosis.keuangan).toContain('Maaf');
   });
 
   // -----------------------------------------------------------------------
   // Test 3: AI mengembalikan JSON terbungkus markdown ```json ...
   // -----------------------------------------------------------------------
   it('membersihkan bungkusan markdown ```json dari response AI', async () => {
-    const aiResponse = '```json\n{"diagnosis": "Test markdown","nama_ide_pivot": "Paket Test","deskripsi_pivot": "Deskripsi test","estimasi_harga_jual_baru": 100000,"jumlah_unit_per_paket": 5,"draft_whatsapp": "Test WA"}\n```';
+    const aiResponse = '```json\n{"diagnosis": {"keuangan":"Test keuangan","stok":"Test stok","pemasaran":"Test pemasaran","layanan":"Test layanan"},"nama_ide_pivot": "Paket Test","deskripsi_pivot": "Deskripsi test","estimasi_harga_jual_baru": 100000,"jumlah_unit_per_paket": 5,"draft_whatsapp": "Test WA"}\n```';
 
     mockGenerateContent.mockResolvedValueOnce({
       response: { text: () => aiResponse },
@@ -170,7 +188,12 @@ describe('POST /api/diagnose — Integration Tests', () => {
   // -----------------------------------------------------------------------
   it('set default jumlah_unit_per_paket = 1 jika AI tidak mengirimnya', async () => {
     const aiResponse = JSON.stringify({
-      diagnosis: 'Test',
+      diagnosis: {
+        keuangan: 'Test keuangan',
+        stok: 'Test stok',
+        pemasaran: 'Test pemasaran',
+        layanan: 'Test layanan',
+      },
       nama_ide_pivot: 'Paket Test',
       deskripsi_pivot: 'Test',
       estimasi_harga_jual_baru: 50000,
@@ -201,7 +224,12 @@ describe('POST /api/diagnose — Integration Tests', () => {
   // -----------------------------------------------------------------------
   it('gunakan fallback estimasi harga jika AI return angka tidak valid', async () => {
     const aiResponse = JSON.stringify({
-      diagnosis: 'Test',
+      diagnosis: {
+        keuangan: 'Test keuangan',
+        stok: 'Test stok',
+        pemasaran: 'Test pemasaran',
+        layanan: 'Test layanan',
+      },
       nama_ide_pivot: 'Paket Test',
       deskripsi_pivot: 'Test',
       estimasi_harga_jual_baru: 0, // tidak valid
@@ -234,7 +262,12 @@ describe('POST /api/diagnose — Integration Tests', () => {
   // -----------------------------------------------------------------------
   it('response mengandung semua field yang dibutuhkan frontend', async () => {
     const aiResponse = JSON.stringify({
-      diagnosis: 'Test diagnosis',
+      diagnosis: {
+        keuangan: 'Test keuangan',
+        stok: 'Test stok',
+        pemasaran: 'Test pemasaran',
+        layanan: 'Test layanan',
+      },
       nama_ide_pivot: 'Paket Premium',
       deskripsi_pivot: 'Deskripsi paket premium',
       estimasi_harga_jual_baru: 200000,
