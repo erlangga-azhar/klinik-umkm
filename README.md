@@ -520,7 +520,6 @@ Klinik UMKM adalah proyek open-source. Lihat panduan kontribusi di bawah.
 <p align="center">
   <a href="https://www.instagram.com/erlng_zhr"><img src="https://img.shields.io/badge/Instagram-erlng__zhr-E4405F?style=for-the-badge&logo=instagram&logoColor=white&labelColor=18181b" alt="Instagram" /></a>
   <a href="https://github.com/erlangga-azhar"><img src="https://img.shields.io/badge/GitHub-erlangga--azhar-18181b?style=for-the-badge&logo=github&logoColor=white&labelColor=18181b" alt="GitHub" /></a>
-  <a href="https://linkedin.com/in/erlangga-azhar"><img src="https://img.shields.io/badge/LinkedIn-erlangga--azhar-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white&labelColor=18181b" alt="LinkedIn" /></a>
 </p>
 
 ---
@@ -566,7 +565,7 @@ Mencegah penyalahgunaan API, menjaga fokus, dan mendorong aksi. Setelah 3 ronde 
 <details>
 <summary><strong>Ada masalah / bug? Lapor ke mana?</strong></summary>
 <br />
-GitHub Issues (rekomendasi), DM Instagram [@erlng_zhr](https://www.instagram.com/erlng_zhr), atau [LinkedIn](https://linkedin.com/in/erlangga-azhar).
+GitHub Issues (rekomendasi) atau DM Instagram [@erlng_zhr](https://www.instagram.com/erlng_zhr).
 </details>
 
 ---

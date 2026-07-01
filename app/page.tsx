@@ -101,17 +101,12 @@ export default function KlinikUMKM() {
             blob2.style.translate = `0 ${scrollY * -0.08}px`;
           }
 
-          const cardsContainer = cardsGridRef.current;
-          if (cardsContainer) {
-            const cards = cardsContainer.children;
-            for (let i = 0; i < cards.length; i++) {
-              const card = cards[i] as HTMLElement;
-              if (card) {
-                const stagger = 0.04 + i * 0.03;
-                card.style.translate = `0 ${scrollY * stagger}px`;
-              }
-            }
-          }
+          // Pain point cards hanya mengandalkan CSS hover (translate + scale)
+          // Inline style.translate DITIADAKAN agar tidak override hover class
+          // Layout shift sebelumnya terjadi karena inline translate berkonflik
+          // dengan hover:-translate-y-1 dari Tailwind (inline > CSS specificity).
+          // Sekarang kartu hanya bergerak via CSS class, parallax diabaikan
+          // untuk container ini — cukup grid dan blob saja yang parallax.
 
           ticking = false;
         });
@@ -256,7 +251,7 @@ export default function KlinikUMKM() {
               return (
                 <div
                   key={idx}
-                  className="group relative bg-white/70 dark:bg-zinc-900/75 border border-slate-100/80 dark:border-zinc-800/60 backdrop-blur-md rounded-3xl p-5 sm:p-6 shadow-[0_2px_16px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgb(0,0,0,0.15)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-1 hover:scale-102"
+                  className="group relative bg-white/70 dark:bg-zinc-900/75 border border-slate-100/80 dark:border-zinc-800/60 backdrop-blur-md rounded-3xl p-5 sm:p-6 shadow-[0_2px_16px_rgb(0,0,0,0.03)] dark:shadow-[0_2px_16px_rgb(0,0,0,0.15)] transition-all duration-300 ease-out hover:scale-105 hover:-translate-y-1 hover:shadow-xl dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)]"
                 >
                   <div className="absolute inset-0 rounded-3xl bg-linear-to-b from-white/40 dark:from-white/5 to-transparent pointer-events-none" />
 
