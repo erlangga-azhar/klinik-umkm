@@ -75,6 +75,9 @@ export const metadata: Metadata = {
   },
   category: "business",
   classification: "Business Diagnosis Tool",
+  other: {
+    "dicoding:email": "azarrhost@gmail.com",
+  },
 };
 
 export default function RootLayout({
