@@ -43,21 +43,21 @@ export default function FormDiagnose({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div className="space-y-1.5">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label htmlFor="produk" className="block text-xs font-semibold uppercase tracking-wider text-slate-500">
             Nama Produk / Jasa
           </label>
           <input
-            type="text" name="produk" required placeholder="Contoh: Es Kopi Susu Aren"
+            id="produk" type="text" name="produk" required placeholder="Contoh: Es Kopi Susu Aren"
             value={form.produk} onChange={onInputChange}
             className="w-full px-4 py-3.5 rounded-2xl bg-white border border-slate-200/80 text-slate-800 placeholder:text-slate-400/70 transition-all duration-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:outline-none shadow-[0_2px_8px_rgb(0,0,0,0.02)]"
           />
         </div>
         <div className="space-y-1.5">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label htmlFor="keluhan" className="block text-xs font-semibold uppercase tracking-wider text-slate-500">
             Keluhan Utama
           </label>
           <input
-            type="text" name="keluhan" required placeholder="Atau pilih opsi cepat di bawah..."
+            id="keluhan" type="text" name="keluhan" required placeholder="Atau pilih opsi cepat di bawah..."
             value={form.keluhan} onChange={onInputChange}
             className="w-full px-4 py-3.5 rounded-2xl bg-white border border-slate-200/80 text-slate-800 placeholder:text-slate-400/70 transition-all duration-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:outline-none shadow-[0_2px_8px_rgb(0,0,0,0.02)]"
           />
@@ -87,26 +87,26 @@ export default function FormDiagnose({
 
       <div className="grid grid-cols-2 gap-5">
         <div className="space-y-1.5">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label htmlFor="hargaModal" className="block text-xs font-semibold uppercase tracking-wider text-slate-500">
             Harga Modal (HPP)
           </label>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400">Rp</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400" aria-hidden="true">Rp</span>
             <input
-              type="number" name="hargaModal" required placeholder="0"
+              id="hargaModal" type="number" name="hargaModal" required placeholder="0"
               value={form.hargaModal} onChange={onInputChange}
               className="w-full pl-10 pr-4 py-3.5 rounded-2xl bg-white border border-slate-200/80 text-slate-800 placeholder:text-slate-400/70 transition-all duration-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:outline-none shadow-[0_2px_8px_rgb(0,0,0,0.02)]"
             />
           </div>
         </div>
         <div className="space-y-1.5">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label htmlFor="hargaJualLama" className="block text-xs font-semibold uppercase tracking-wider text-slate-500">
             Harga Jual Saat Ini
           </label>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400">Rp</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400" aria-hidden="true">Rp</span>
             <input
-              type="number" name="hargaJualLama" required placeholder="0"
+              id="hargaJualLama" type="number" name="hargaJualLama" required placeholder="0"
               value={form.hargaJualLama} onChange={onInputChange}
               className="w-full pl-10 pr-4 py-3.5 rounded-2xl bg-white border border-slate-200/80 text-slate-800 placeholder:text-slate-400/70 transition-all duration-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:outline-none shadow-[0_2px_8px_rgb(0,0,0,0.02)]"
             />

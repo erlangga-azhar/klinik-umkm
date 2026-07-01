@@ -57,10 +57,12 @@ const JAILBREAK_PATTERNS: RegExp[] = [
   /ignore\s+(all\s+)?previous\s+(instructions|directives|commands|prompts)/i,
   /system\s+prompt/i,
   /become\s+(a\s+)?developer/i,
-  /delete\s+(the\s+)?database/i,
+  /delete\s+(the\s+)?(entire\s+)?database/i,
   /drop\s+(table|database|collection)/i,
   /reveal\s+(your\s+)?(system|instructions|prompt)/i,
   /show\s+(me\s+)?(your\s+)?(system|instructions|raw\s+prompt)/i,
+  /display\s+(your\s+)?(system|raw\s+)?prompt/i,
+  /reveal\s+(your\s+)?(prompt|system)/i,
   /akses\s+(file\s+)?(system|konfigurasi|config|env)/i,
   /bocorkan\s+(system\s+)?(instruction|prompt|konfigurasi)/i,
   /abaikan\s+(semua\s+)?(instruksi|perintah|arahan|aturan)\s+(sebelumnya|lalu)/i,
@@ -97,7 +99,7 @@ const SUSPICIOUS_CHAR_PATTERN = /[^\x20-\x7E\u00C0-\u024F\u1E00-\u1EFF\u2000-\u2
  * @param pertanyaan - (Opsional) Pertanyaan chat lanjutan
  * @returns object { aman: boolean, alasan?: string }
  */
-function validasiKeamananInput(
+export function validasiKeamananInput(
   namaProduk: string,
   keluhan: string,
   pertanyaan?: string
