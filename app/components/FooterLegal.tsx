@@ -179,7 +179,7 @@ export default function FooterLegal() {
 
         {/* Modal Card */}
         <div
-          className={`relative max-w-lg w-full backdrop-blur-xl bg-white/95 border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-[0_20px_60px_rgb(0,0,0,0.12)] transition-all duration-300 ease-out ${
+          className={`relative max-w-lg w-full backdrop-blur-xl bg-white/95 dark:bg-zinc-900/95 border border-slate-200/80 dark:border-zinc-800/80 rounded-3xl p-6 sm:p-8 shadow-[0_20px_60px_rgb(0,0,0,0.12)] dark:shadow-[0_20px_60px_rgb(0,0,0,0.5)] transition-all duration-300 ease-out ${
             activeModal
               ? 'opacity-100 scale-100'
               : 'opacity-0 scale-95'
@@ -195,7 +195,7 @@ export default function FooterLegal() {
                 {/* Close button */}
                 <button
                   onClick={closeModal}
-                  className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-slate-100/80 border border-slate-200/60 flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-200/80 transition-all duration-200"
+                  className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-slate-100/80 dark:bg-zinc-800/80 border border-slate-200/60 dark:border-zinc-700/60 flex items-center justify-center text-slate-400 dark:text-zinc-500 hover:text-slate-600 dark:hover:text-zinc-300 hover:bg-slate-200/80 dark:hover:bg-zinc-700/80 transition-all duration-200"
                   aria-label="Tutup modal"
                 >
                   <X className="w-4 h-4" />
@@ -203,19 +203,19 @@ export default function FooterLegal() {
 
                 {/* Header */}
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 rounded-2xl bg-emerald-50 border border-emerald-100/80 flex items-center justify-center">
-                    <Icon className="w-5 h-5 text-emerald-600" />
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-900/40 border border-emerald-100/80 dark:border-emerald-800/60 flex items-center justify-center">
+                    <Icon className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900">{content.title}</h3>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">{content.title}</h3>
                 </div>
 
                 {/* Body */}
-                <div className="text-sm text-slate-600 leading-relaxed max-h-[50vh] overflow-y-auto pr-1">
+                <div className="text-sm text-slate-600 dark:text-zinc-400 leading-relaxed max-h-[50vh] overflow-y-auto pr-1">
                   <p>{content.body}</p>
                 </div>
 
                 {/* Close action */}
-                <div className="mt-6 pt-4 border-t border-slate-100">
+                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-zinc-800">
                   <button
                     onClick={closeModal}
                     className="w-full py-3 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-bold rounded-2xl transition-all duration-200 text-sm shadow-[0_4px_16px_rgb(16,185,129,0.15)] active:scale-[0.98]"

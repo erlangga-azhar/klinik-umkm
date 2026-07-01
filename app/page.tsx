@@ -5,7 +5,9 @@ import {
   BrainCircuit,
   HeartPulse, ArrowDownToLine, Syringe, Sparkles, ScrollText,
   AlertTriangle, Wallet, TrendingDown, Boxes, MessageSquareX,
+  Sun, Moon,
 } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import FormDiagnose from '@/app/components/FormDiagnose';
 import RiwayatPanel from '@/app/components/RiwayatPanel';
 import ResepCard from '@/app/components/ResepCard';
@@ -36,8 +38,8 @@ const PAIN_POINTS = [
     title: 'Pengelolaan Keuangan (Sindrom Laci Warung)',
     desc: 'Uang hasil penjualan tercampur dengan uang dapur. Omzet harian terlihat besar, tapi pas akhir bulan dihitung, saldo ATM malah nol dan modal habis tak berbekas.',
     gradient: 'from-rose-300 to-rose-400',
-    badge: 'bg-rose-50/80 border-rose-100/80 text-rose-600',
-    iconBg: 'bg-rose-50 border-rose-100 text-rose-500',
+    badge: 'bg-rose-50/80 dark:bg-rose-950/40 border-rose-100/80 dark:border-rose-900/60 text-rose-600 dark:text-rose-300',
+    iconBg: 'bg-rose-50 dark:bg-rose-950/40 border-rose-100 dark:border-rose-900/60 text-rose-500 dark:text-rose-300',
   },
   {
     icon: TrendingDown,
@@ -45,8 +47,8 @@ const PAIN_POINTS = [
     title: 'Pemasaran Digital (Korban Banting Harga)',
     desc: 'Sudah lelah bikin konten dan bakar modal buat promosi, tapi pembeli cuma datang pas ada diskon gila-gilaan. Begitu harga kembali normal, toko langsung sepi senyap.',
     gradient: 'from-amber-300 to-amber-400',
-    badge: 'bg-amber-50/80 border-amber-100/80 text-amber-600',
-    iconBg: 'bg-amber-50 border-amber-100 text-amber-500',
+    badge: 'bg-amber-50/80 dark:bg-amber-950/40 border-amber-100/80 dark:border-amber-900/60 text-amber-600 dark:text-amber-300',
+    iconBg: 'bg-amber-50 dark:bg-amber-950/40 border-amber-100 dark:border-amber-900/60 text-amber-500 dark:text-amber-300',
   },
   {
     icon: Boxes,
@@ -54,8 +56,8 @@ const PAIN_POINTS = [
     title: 'Manajemen Stok (Modal Mati di Gudang)',
     desc: 'Salah prediksi tren membuat barang yang tidak laku menumpuk jadi pajangan mati di gudang, sementara produk yang sedang dicari pelanggan malah kehabisan modal untuk kulakan.',
     gradient: 'from-sky-300 to-sky-400',
-    badge: 'bg-sky-50/80 border-sky-100/80 text-sky-600',
-    iconBg: 'bg-sky-50 border-sky-100 text-sky-500',
+    badge: 'bg-sky-50/80 dark:bg-sky-950/40 border-sky-100/80 dark:border-sky-900/60 text-sky-600 dark:text-sky-300',
+    iconBg: 'bg-sky-50 dark:bg-sky-950/40 border-sky-100 dark:border-sky-900/60 text-sky-500 dark:text-sky-300',
   },
   {
     icon: MessageSquareX,
@@ -63,8 +65,8 @@ const PAIN_POINTS = [
     title: 'Layanan Pelanggan (Habis Energi Bales Chat)',
     desc: 'Energi habis seharian hanya untuk membalas ribuan chat calon pembeli yang cuma "P", tanya-tanya kelengkapan produk, minta diskon gratis ongkir, tapi ujung-ujungnya PHP.',
     gradient: 'from-violet-300 to-violet-400',
-    badge: 'bg-violet-50/80 border-violet-100/80 text-violet-600',
-    iconBg: 'bg-violet-50 border-violet-100 text-violet-500',
+    badge: 'bg-violet-50/80 dark:bg-violet-950/40 border-violet-100/80 dark:border-violet-900/60 text-violet-600 dark:text-violet-300',
+    iconBg: 'bg-violet-50 dark:bg-violet-950/40 border-violet-100 dark:border-violet-900/60 text-violet-500 dark:text-violet-300',
   },
 ];
 
@@ -73,6 +75,7 @@ export default function KlinikUMKM() {
   const [error, setError] = useState<string>('');
   const [report, setReport] = useState<any>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState<boolean>(false);
 
   // Chat 3 Ronde States
@@ -292,33 +295,54 @@ export default function KlinikUMKM() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-emerald-50/15 to-white text-slate-800">
+    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-emerald-50/15 to-white text-slate-800 dark:from-zinc-950 dark:via-emerald-950/10 dark:to-zinc-900 dark:text-zinc-100 transition-[color,background,border,box-shadow] duration-300">
+
+      {/* ================================================================== */}
+      {/* THEME TOGGLE — Floating button, safe di viewport corner,            */}
+      {/* tidak overlapping dengan konten hero di layar HP kecil              */}
+      {/* ================================================================== */}
+      {mounted && (
+        <div className="fixed top-3 right-3 sm:top-5 sm:right-5 z-50">
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white/90 dark:bg-zinc-800/90 border border-slate-200/70 dark:border-zinc-700/70 flex items-center justify-center text-slate-600 dark:text-zinc-300 shadow-[0_2px_12px_rgb(0,0,0,0.06)] hover:shadow-[0_4px_20px_rgb(0,0,0,0.1)] dark:hover:shadow-[0_4px_20px_rgb(0,0,0,0.3)] backdrop-blur-sm transition-all duration-300 hover:scale-110 active:scale-95"
+            aria-label={theme === 'dark' ? 'Aktifkan Light Mode' : 'Aktifkan Dark Mode'}
+            title={theme === 'dark' ? 'Aktifkan Light Mode' : 'Aktifkan Dark Mode'}
+          >
+            {theme === 'dark' ? (
+              <Sun className="w-4 h-4 sm:w-5 sm:h-5 transition-all duration-300" />
+            ) : (
+              <Moon className="w-4 h-4 sm:w-5 sm:h-5 transition-all duration-300" />
+            )}
+          </button>
+        </div>
+      )}
 
       {/* ================================================================== */}
       {/* HERO SECTION                                                       */}
       {/* ================================================================== */}
-      <section className="relative overflow-hidden pt-16 pb-20 sm:pt-24 sm:pb-28 px-4 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden pt-20 pb-20 sm:pt-24 sm:pb-28 px-4 sm:px-6 lg:px-8">
         <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-emerald-400/10 blur-[120px]" />
-          <div className="absolute -bottom-40 -left-40 w-[400px] h-[400px] rounded-full bg-teal-300/10 blur-[100px]" />
+          <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-emerald-400/10 blur-[120px] dark:bg-emerald-400/5" />
+          <div className="absolute -bottom-40 -left-40 w-[400px] h-[400px] rounded-full bg-teal-300/10 blur-[100px] dark:bg-teal-300/5" />
         </div>
 
         <div className="max-w-4xl mx-auto text-center relative">
-          <div className="inline-flex mb-6 items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm border border-slate-200/70 rounded-full shadow-[0_2px_12px_rgb(0,0,0,0.03)]">
+          <div className="inline-flex mb-6 items-center gap-2 px-4 py-2 bg-white/90 dark:bg-zinc-900/80 backdrop-blur-sm border border-slate-200/70 dark:border-zinc-800/70 rounded-full shadow-[0_2px_12px_rgb(0,0,0,0.03)]">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-xs font-semibold text-slate-500 tracking-wide uppercase">
+            <span className="text-xs font-semibold text-slate-500 dark:text-zinc-400 tracking-wide uppercase">
               AI Diagnosis Gratis &bull; Made for UMKM Indonesia
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.1] sm:leading-[1.05]">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.1] sm:leading-[1.05]">
             Bosan{' '}
             <span className="bg-gradient-to-r from-rose-500 to-rose-400 bg-clip-text text-transparent">
               Banting Harga
             </span>{' '}
             Terus?
             <br />
-            <span className="text-slate-900">
+            <span className="text-slate-900 dark:text-white">
               Biar Dokter AI yang{' '}
               <span className="bg-gradient-to-r from-emerald-600 to-emerald-500 bg-clip-text text-transparent">
                 Racik Model Langganan
@@ -327,10 +351,10 @@ export default function KlinikUMKM() {
             </span>
           </h1>
 
-          <p className="mt-6 text-lg sm:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-6 text-lg sm:text-xl text-slate-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
             Omzet gede, pas dihitung malah boncos? Pelanggan cuma datang pas promo doang? 
             Berhenti tebak-tebak margin. Masukkan modal dan harga jual Anda, dapatkan resep 
-            model bisnis langganan plus kalkulasi BEP dalam 3 menit. <strong className="text-slate-700">Gratis, tanpa spam.</strong>
+            model bisnis langganan plus kalkulasi BEP dalam 3 menit. <strong className="text-slate-700 dark:text-zinc-200">Gratis, tanpa spam.</strong>
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -338,18 +362,18 @@ export default function KlinikUMKM() {
               onClick={scrollToForm}
               className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white font-bold text-lg py-4 px-8 rounded-2xl transition-all duration-300 shadow-[0_8px_30px_rgb(16,185,129,0.25)] hover:shadow-[0_12px_40px_rgb(16,185,129,0.35)] active:scale-[0.97] hover:scale-[1.02]"
             >
-              <span className="absolute inset-0 rounded-2xl ring-2 ring-emerald-400/40 ring-offset-2 ring-offset-slate-50 group-hover:ring-emerald-500/60 transition-all duration-300" />
+              <span className="absolute inset-0 rounded-2xl ring-2 ring-emerald-400/40 ring-offset-2 ring-offset-slate-50 dark:ring-offset-zinc-950 group-hover:ring-emerald-500/60 transition-all duration-300" />
               <Syringe className="w-6 h-6" />
               Cek Kesehatan Bisnis Sekarang
               <ArrowDownToLine className="w-5 h-5 group-hover:translate-y-1 transition-transform duration-200" />
             </button>
-            <span className="text-sm text-slate-400 flex items-center gap-1.5">
+            <span className="text-sm text-slate-400 dark:text-zinc-500 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               Tidak perlu daftar akun
             </span>
           </div>
 
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-xs text-slate-400 font-medium">
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-xs text-slate-400 dark:text-zinc-500 font-medium">
             <span className="flex items-center gap-1.5">
               <BrainCircuit className="w-3.5 h-3.5 text-emerald-500" />
               Digerakkan Gemini 2.5 Flash
@@ -372,10 +396,10 @@ export default function KlinikUMKM() {
       <section className="px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               Pilih Penyakit Bisnis yang Paling Membuat Anda Lelah Saat Ini
             </h2>
-            <p className="mt-3 text-slate-500 max-w-lg mx-auto">
+            <p className="mt-3 text-slate-500 dark:text-zinc-400 max-w-lg mx-auto">
               Pilih salah satu—atau jujur saja, Anda pasti mengalami lebih dari satu. 
               Tenang, semua ada resep obatnya.
             </p>
@@ -387,10 +411,10 @@ export default function KlinikUMKM() {
               return (
                 <div
                   key={idx}
-                  className="group relative backdrop-blur-xl bg-white/75 border border-slate-200/70 rounded-3xl p-5 sm:p-6 shadow-[0_2px_16px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1"
+                  className="group relative backdrop-blur-xl bg-white/75 dark:bg-zinc-900/80 border border-slate-200/70 dark:border-zinc-800/70 rounded-3xl p-5 sm:p-6 shadow-[0_2px_16px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgb(0,0,0,0.15)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-1"
                 >
                   {/* Glassmorphism shine overlay */}
-                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-b from-white/40 dark:from-white/5 to-transparent pointer-events-none" />
 
                   {/* Top accent line */}
                   <div className={`absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r ${point.gradient} rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
@@ -405,11 +429,11 @@ export default function KlinikUMKM() {
                       {point.label}
                     </div>
 
-                    <h3 className="text-sm font-bold text-slate-900 mb-2 leading-snug">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-2 leading-snug">
                       {point.title}
                     </h3>
 
-                    <p className="text-xs text-slate-500 leading-relaxed">
+                    <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed">
                       {point.desc}
                     </p>
                   </div>
@@ -430,9 +454,8 @@ export default function KlinikUMKM() {
       <section className="px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28">
         <div className="max-w-3xl mx-auto">
 
-          {/* Error notification */}
-          {error && (
-            <div className="mb-6 p-4 bg-rose-50/90 backdrop-blur-sm border border-rose-200/80 text-rose-700 rounded-2xl flex items-start gap-3 shadow-[0_4px_20px_rgb(0,0,0,0.03)]">
+          {/* Error notification */}            {error && (
+            <div className="mb-6 p-4 bg-rose-50/90 dark:bg-rose-950/40 backdrop-blur-sm border border-rose-200/80 dark:border-rose-900/60 text-rose-700 dark:text-rose-300 rounded-2xl flex items-start gap-3 shadow-[0_4px_20px_rgb(0,0,0,0.03)]">
               <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
               <p className="text-sm font-medium">{error}</p>
             </div>
@@ -461,7 +484,7 @@ export default function KlinikUMKM() {
 
           {/* Loading State */}
           {loading && (
-            <div className="backdrop-blur-xl bg-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/80 rounded-3xl p-12 sm:p-16 text-center space-y-6">
+            <div className="backdrop-blur-xl bg-white/80 dark:bg-zinc-900/90 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] border border-slate-100/80 dark:border-zinc-800/80 rounded-3xl p-12 sm:p-16 text-center space-y-6">
               <div className="relative inline-flex">
                 <div className="absolute inset-0 rounded-full bg-emerald-400/20 animate-ping" />
                 <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-[0_8px_30px_rgb(16,185,129,0.2)]">
@@ -469,8 +492,8 @@ export default function KlinikUMKM() {
                 </div>
               </div>
               <div className="space-y-2">
-                <h3 className="text-xl font-bold text-slate-900">Laboratorium Analisis AI Sedang Bekerja</h3>
-                <p className="text-sm text-slate-400 max-w-sm mx-auto leading-relaxed">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Laboratorium Analisis AI Sedang Bekerja</h3>
+                <p className="text-sm text-slate-400 dark:text-zinc-500 max-w-sm mx-auto leading-relaxed">
                   Dokter AI sedang mengidentifikasi struktur biaya dan meracik resep model bisnis paket langganan yang aman dari perang harga.
                 </p>
               </div>

@@ -1,6 +1,30 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+}
+
+/* ======================================================================== */
+/* GLOBAL THEME TRANSITIONS                                                 */
+/* Semua elemen akan bertransisi mulus saat dark/light class berganti.       */
+/* Hanya property visual yang berubah saat tema (warna, bg, border, shadow)  */
+/* — tidak menggunakan `all` agar performa tetap ringan & tidak mengganggu   */
+/* animasi interaktif (hover scale, spin, bounce, dll) yang pakai transform. */
+/* ======================================================================== */
+html {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: 200ms;
+  transition-timing-function: ease-out;
 }
