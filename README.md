@@ -14,6 +14,9 @@
   <a href="https://klinik-umkm.vercel.app"><img src="https://img.shields.io/badge/Live_Demo-klinik--umkm.vercel.app-10b981?style=flat-square&logo=vercel&logoColor=white&labelColor=18181b" alt="Live Demo" /></a>
   <a href="#"><img src="https://img.shields.io/badge/Status-Production_Ready-22c55e?style=flat-square&labelColor=18181b" alt="Status" /></a>
   <a href="#"><img src="https://img.shields.io/badge/Test_Coverage-75_tests-8b5cf6?style=flat-square&labelColor=18181b" alt="Test Coverage" /></a>
+  <a href="#"><img src="https://img.shields.io/github/actions/workflow/status/erlangga-azhar/klinik-umkm/ci.yml?style=flat-square&label=CI%2FCD&logo=githubactions&logoColor=white&labelColor=18181b" alt="CI/CD" /></a>
+  <a href="https://github.com/erlangga-azhar/klinik-umkm/stargazers"><img src="https://img.shields.io/github/stars/erlangga-azhar/klinik-umkm?style=flat-square&logo=github&logoColor=white&labelColor=18181b" alt="Stars" /></a>
+  <a href="https://github.com/erlangga-azhar/klinik-umkm/forks"><img src="https://img.shields.io/github/forks/erlangga-azhar/klinik-umkm?style=flat-square&logo=github&logoColor=white&labelColor=18181b" alt="Forks" /></a>
 </p>
 
 <br />

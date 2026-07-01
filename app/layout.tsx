@@ -13,7 +13,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const BASE_URL = "https://klinik-umkm.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
   title: "Klinik UMKM - Diagnosis Bisnis & Racik Model Langganan Anti Boncos",
   description:
     "Berhenti banting harga! Dokter AI akan diagnosis struktur HPP, margin, dan BEP bisnis UMKM Anda. Dapatkan resep model langganan siap pakai + draf WhatsApp dalam 3 menit.",
