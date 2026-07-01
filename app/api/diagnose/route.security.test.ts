@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 // validasiKeamananInput adalah pure function yang tidak bergantung
 // pada environment (GEMINI_API_KEY, dll), sehingga bisa diimport
 // langsung tanpa perlu setup khusus.
-import { validasiKeamananInput } from '@/app/api/diagnose/route';
+import { validasiKeamananInput } from '@/lib';
 
 // =========================================================================
 // Unit Test: validasiKeamananInput

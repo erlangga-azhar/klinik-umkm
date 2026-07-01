@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   BrainCircuit,
   HeartPulse, ArrowDownToLine, Syringe, Sparkles, ScrollText,
@@ -14,22 +14,7 @@ import ResepCard from '@/app/components/ResepCard';
 import CaraKerja from '@/app/components/CaraKerja';
 import ChatBox from '@/app/components/ChatBox';
 import FooterLegal from '@/app/components/FooterLegal';
-import type { ChatLogEntry } from '@/app/components/ChatBox';
-
-interface HistoryItem {
-  id: string;
-  timestamp: string;
-  produk: string;
-  hargaModal: string;
-  hargaJualLama: string;
-  keluhan: string;
-  nama_ide_pivot: string;
-  report: any;
-  chatLogs?: ChatLogEntry[];
-  followUpCount?: number;
-}
-
-const MAX_FOLLOW_UPS = 3;
+import { useDiagnose, MAX_FOLLOW_UPS } from '@/app/hooks/useDiagnose';
 
 const PAIN_POINTS = [
   {
@@ -71,248 +56,99 @@ const PAIN_POINTS = [
 ];
 
 export default function KlinikUMKM() {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-  const [report, setReport] = useState<any>(null);
-  const [history, setHistory] = useState<HistoryItem[]>([]);
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState<boolean>(false);
 
-  // Chat 3 Ronde States
-  const [chatLogs, setChatLogs] = useState<ChatLogEntry[]>([]);
-  const [followUpCount, setFollowUpCount] = useState<number>(0);
-  const [isSessionClosed, setIsSessionClosed] = useState<boolean>(false);
-  const [chatLoading, setChatLoading] = useState<boolean>(false);
-  const [currentHistoryId, setCurrentHistoryId] = useState<string | null>(null);
+  const {
+    form, handleInputChange, handleSelectKeluhan,
+    loading, error, report, handleSubmit, handleKonsultasiUlang,
+    chatLogs, followUpCount, isSessionClosed, chatLoading,
+    handleChatSubmit,
+    history, muatDariRiwayat, handleClearHistory,
+    mounted, scrollToForm, formRef,
+  } = useDiagnose();
 
-  const formRef = useRef<HTMLDivElement>(null);
+  // Parallax refs — direct DOM manipulation untuk performa tinggi
+  const gridRef = useRef<HTMLDivElement>(null);
+  const blob1Ref = useRef<HTMLDivElement>(null);
+  const blob2Ref = useRef<HTMLDivElement>(null);
+  const cardsGridRef = useRef<HTMLDivElement>(null);
 
-  const [form, setForm] = useState({
-    produk: '',
-    hargaModal: '',
-    hargaJualLama: '',
-    keluhan: ''
-  });
-
-  // Hanya akses localStorage setelah mounted (cegah hydration error SSR)
+  // ==================================================================
+  // PARALLAX SCROLL — grid bergeser pelan, blob melayang dengan depth
+  // ==================================================================
   useEffect(() => {
-    setMounted(true);
-    try {
-      const saved = localStorage.getItem('klinik-umkm-history');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          setHistory(parsed);
-        }
-      }
-    } catch (e: any) {
-      // localStorage tidak tersedia atau data rusak
-    }
-  }, []);
+    const grid = gridRef.current;
+    const blob1 = blob1Ref.current;
+    const blob2 = blob2Ref.current;
 
-  const simpanRiwayat = (newReport: any, chatData?: { chatLogs: ChatLogEntry[]; followUpCount: number }) => {
-    const item: HistoryItem = {
-      id: Date.now().toString(),
-      timestamp: new Date().toLocaleString('id-ID'),
-      produk: form.produk,
-      hargaModal: form.hargaModal,
-      hargaJualLama: form.hargaJualLama,
-      keluhan: form.keluhan,
-      nama_ide_pivot: newReport.nama_ide_pivot || '',
-      report: newReport,
-      chatLogs: chatData?.chatLogs || [],
-      followUpCount: chatData?.followUpCount || 0,
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+
+          if (grid) {
+            grid.style.backgroundPositionY = `${scrollY * 0.06}px`;
+          }
+
+          if (blob1) {
+            blob1.style.translate = `0 ${scrollY * 0.12}px`;
+          }
+
+          if (blob2) {
+            blob2.style.translate = `0 ${scrollY * -0.08}px`;
+          }
+
+          const cardsContainer = cardsGridRef.current;
+          if (cardsContainer) {
+            const cards = cardsContainer.children;
+            for (let i = 0; i < cards.length; i++) {
+              const card = cards[i] as HTMLElement;
+              if (card) {
+                const stagger = 0.04 + i * 0.03;
+                card.style.translate = `0 ${scrollY * stagger}px`;
+              }
+            }
+          }
+
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
-    const updated = [item, ...history].slice(0, 20);
-    setHistory(updated);
-    setCurrentHistoryId(item.id);
-    try {
-      localStorage.setItem('klinik-umkm-history', JSON.stringify(updated));
-    } catch (e: any) {
-      // localStorage penuh
-    }
-  };
 
-  const updateRiwayatChat = (chatLogs: ChatLogEntry[], followUpCount: number) => {
-    setHistory(prev => {
-      const updated = prev.map((item: HistoryItem) => {
-        if (item.id === currentHistoryId) {
-          return { ...item, chatLogs, followUpCount };
-        }
-        return item;
-      });
-      try {
-        localStorage.setItem('klinik-umkm-history', JSON.stringify(updated));
-      } catch (e: any) {}
-      return updated;
-    });
-  };
-
-  const muatDariRiwayat = (item: HistoryItem) => {
-    setReport(item.report);
-    setError('');
-    setChatLogs(item.chatLogs || []);
-    setFollowUpCount(item.followUpCount || 0);
-    setIsSessionClosed((item.followUpCount || 0) >= MAX_FOLLOW_UPS);
-    setCurrentHistoryId(item.id);
-    setForm({
-      produk: item.produk || '',
-      hargaModal: item.hargaModal || '',
-      hargaJualLama: item.hargaJualLama || '',
-      keluhan: item.keluhan || ''
-    });
-    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
-  const handleClearHistory = () => {
-    setHistory([]);
-    try {
-      localStorage.removeItem('klinik-umkm-history');
-    } catch (e: any) {}
-  };
-
-  const handleInputChange = (e: any) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSelectKeluhan = (teksKeluhan: string) => {
-    setForm({ ...form, keluhan: teksKeluhan });
-  };
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setReport(null);
-    setChatLogs([]);
-    setFollowUpCount(0);
-    setIsSessionClosed(false);
-    setCurrentHistoryId(null);
-
-    try {
-      const res = await fetch('/api/diagnose', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          produk: form.produk,
-          hargaModal: Number(form.hargaModal),
-          hargaJualLama: Number(form.hargaJualLama),
-          keluhan: form.keluhan
-        })
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Gagal memproses data.');
-
-      setReport(data);
-      simpanRiwayat(data);
-    } catch (err: any) {
-      setError(err.message || 'Terjadi kesalahan jaringan.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleKonsultasiUlang = () => {
-    setReport(null);
-    setChatLogs([]);
-    setFollowUpCount(0);
-    setIsSessionClosed(false);
-    setCurrentHistoryId(null);
-    setForm({ produk: '', hargaModal: '', hargaJualLama: '', keluhan: '' });
-  };
-
-  const scrollToForm = () => {
-    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
-  const handleChatSubmit = async (question: string) => {
-    if (chatLoading || isSessionClosed) return;
-
-    const userQuestion = question;
-    setChatLoading(true);
-
-    // Rekam pertanyaan user ke log lokal dulu
-    const updatedLogs: ChatLogEntry[] = [
-      ...chatLogs,
-      { question: userQuestion, answer: '' },
-    ];
-    setChatLogs(updatedLogs);
-
-    try {
-      // Bangun chatHistory untuk dikirim ke API
-      const chatHistoryPayload = chatLogs.map((log: ChatLogEntry) => ({
-        question: log.question,
-        answer: log.answer,
-      }));
-
-      const res = await fetch('/api/diagnose', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chatHistory: chatHistoryPayload,
-          pertanyaan: userQuestion,
-        }),
-      });
-
-      const data = await res.json();
-      const aiReply = data.reply || 'Maaf, saya tidak bisa menjawab saat ini. Coba lagi ya.';
-
-      const newCount = followUpCount + 1;
-
-      // Update log dengan jawaban AI
-      const finalLogs: ChatLogEntry[] = [
-        ...chatLogs,
-        { question: userQuestion, answer: aiReply },
-      ];
-
-      setChatLogs(finalLogs);
-      setFollowUpCount(newCount);
-
-      if (newCount >= MAX_FOLLOW_UPS) {
-        setIsSessionClosed(true);
-      }
-
-      // Simpan ke localStorage via update riwayat
-      updateRiwayatChat(finalLogs, newCount);
-
-    } catch (err: any) {
-      // Jika gagal, tetap catat jawaban error
-      const failedCount = followUpCount + 1;
-      const failedLogs: ChatLogEntry[] = [
-        ...chatLogs,
-        { question: userQuestion, answer: 'Maaf, terjadi gangguan jaringan. Coba tanya lagi ya.' },
-      ];
-      setChatLogs(failedLogs);
-      setFollowUpCount(failedCount);
-      if (failedCount >= MAX_FOLLOW_UPS) {
-        setIsSessionClosed(true);
-      }
-      updateRiwayatChat(failedLogs, failedCount);
-    } finally {
-      setChatLoading(false);
-    }
-  };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <main className="relative min-h-screen bg-gradient-to-b from-slate-50 via-emerald-50/15 to-white text-slate-800 dark:from-zinc-950 dark:via-emerald-950/10 dark:to-zinc-900 dark:text-zinc-100 transition-[color,background,border,box-shadow] duration-300">
 
       {/* ================================================================== */}
-      {/* DATA GRID PATTERN — garis metrik samar di seluruh halaman           */}
+      {/* DATA GRID PATTERN                                                  */}
       {/* ================================================================== */}
-      <div className="fixed inset-0 pointer-events-none z-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] dark:bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)]" />
+      <div
+        ref={gridRef}
+        className="fixed inset-0 pointer-events-none z-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] dark:bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)]"
+      />
 
       {/* ================================================================== */}
-      {/* FLOATING AURA BLOBS — pendaran cahaya dinamis yang bernapas pelan   */}
+      {/* FLOATING AURA BLOBS                                                */}
       {/* ================================================================== */}
       <div className="fixed pointer-events-none z-0 inset-0 overflow-hidden">
-        <div className="absolute -top-48 -left-48 w-[600px] h-[600px] rounded-full bg-emerald-400/10 dark:bg-emerald-400/15 blur-[130px] animate-aura-pulse" />
-        <div className="absolute -bottom-48 -right-48 w-[600px] h-[600px] rounded-full bg-indigo-400/10 dark:bg-indigo-500/15 blur-[130px] animate-aura-pulse-delayed" />
+        <div
+          ref={blob1Ref}
+          className="absolute -top-48 -left-48 w-[600px] h-[600px] rounded-full bg-emerald-400/10 dark:bg-emerald-400/15 blur-[130px] will-change-transform animate-aura-scale"
+        />
+        <div
+          ref={blob2Ref}
+          className="absolute -bottom-48 -right-48 w-[600px] h-[600px] rounded-full bg-indigo-400/10 dark:bg-indigo-500/15 blur-[130px] will-change-transform animate-aura-scale-delayed"
+        />
       </div>
 
       {/* ================================================================== */}
-      {/* THEME TOGGLE — Floating button, safe di viewport corner,            */}
-      {/* tidak overlapping dengan konten hero di layar HP kecil              */}
+      {/* THEME TOGGLE                                                       */}
       {/* ================================================================== */}
       {mounted && (
         <div className="fixed top-3 right-3 sm:top-5 sm:right-5 z-50">
@@ -360,8 +196,8 @@ export default function KlinikUMKM() {
           </h1>
 
           <p className="mt-6 text-lg sm:text-xl text-slate-500 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-            Omzet gede, pas dihitung malah boncos? Pelanggan cuma datang pas promo doang? 
-            Berhenti tebak-tebak margin. Masukkan modal dan harga jual Anda, dapatkan resep 
+            Omzet gede, pas dihitung malah boncos? Pelanggan cuma datang pas promo doang?
+            Berhenti tebak-tebak margin. Masukkan modal dan harga jual Anda, dapatkan resep
             model bisnis langganan plus kalkulasi BEP dalam 3 menit. <strong className="text-slate-700 dark:text-zinc-200">Gratis, tanpa spam.</strong>
           </p>
 
@@ -399,7 +235,7 @@ export default function KlinikUMKM() {
       </section>
 
       {/* ================================================================== */}
-      {/* EMOTIONAL PAIN POINTS — 4 KOLOM (Desktop) / 1 KOLOM (Mobile)       */}
+      {/* EMOTIONAL PAIN POINTS                                              */}
       {/* ================================================================== */}
       <section className="px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20">
         <div className="max-w-5xl mx-auto">
@@ -408,12 +244,12 @@ export default function KlinikUMKM() {
               Pilih Penyakit Bisnis yang Paling Membuat Anda Lelah Saat Ini
             </h2>
             <p className="mt-3 text-slate-500 dark:text-zinc-400 max-w-lg mx-auto">
-              Pilih salah satu—atau jujur saja, Anda pasti mengalami lebih dari satu. 
+              Pilih salah satu—atau jujur saja, Anda pasti mengalami lebih dari satu.
               Tenang, semua ada resep obatnya.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+          <div ref={cardsGridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
             {PAIN_POINTS.map((point, idx) => {
               const IconComp = point.icon;
               return (
@@ -421,10 +257,8 @@ export default function KlinikUMKM() {
                   key={idx}
                   className="group relative bg-white/70 dark:bg-zinc-900/75 border border-slate-100/80 dark:border-zinc-800/60 backdrop-blur-md rounded-3xl p-5 sm:p-6 shadow-[0_2px_16px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_2px_16px_rgb(0,0,0,0.15)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)] transition-all duration-300 hover:-translate-y-1"
                 >
-                  {/* Glassmorphism shine overlay */}
                   <div className="absolute inset-0 rounded-3xl bg-gradient-to-b from-white/40 dark:from-white/5 to-transparent pointer-events-none" />
 
-                  {/* Top accent line */}
                   <div className={`absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r ${point.gradient} rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
 
                   <div className="relative z-10">
@@ -462,7 +296,8 @@ export default function KlinikUMKM() {
       <section className="px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28">
         <div className="max-w-3xl mx-auto">
 
-          {/* Error notification */}            {error && (
+          {/* Error notification */}
+          {error && (
             <div className="mb-6 p-4 bg-rose-50/80 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/60 backdrop-blur-md text-rose-700 dark:text-rose-300 rounded-2xl flex items-start gap-3 shadow-[0_4px_20px_rgb(0,0,0,0.03)]">
               <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
               <p className="text-sm font-medium">{error}</p>

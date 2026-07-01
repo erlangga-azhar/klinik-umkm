@@ -4,8 +4,8 @@ import { describe, it, expect } from 'vitest';
 // adalah pure function yang tidak bergantung pada AI initialization.
 // AI instance di route.ts sekarang lazy-loaded via getGenAI().
 
-import { hitungAnalisisFinansial } from '@/app/api/diagnose/route';
-import type { HitungFinansialInput, HitungFinansialOutput } from '@/app/api/diagnose/route';
+import { hitungAnalisisFinansial } from '@/lib';
+import type { HitungFinansialInput, HitungFinansialOutput } from '@/lib';
 
 // =========================================================================
 // Unit Test: hitungAnalisisFinansial

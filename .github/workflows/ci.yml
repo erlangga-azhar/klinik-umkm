@@ -1,0 +1,63 @@
+# =========================================================================
+# GitHub Actions — Klinik UMKM CI Pipeline
+# =========================================================================
+# Trigger: setiap push dan pull request ke branch main/master
+# Tasks:  typecheck → test → lint → build
+# =========================================================================
+
+name: CI — Klinik UMKM
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20, 22]
+
+    steps:
+      # -------------------------------------------------------------------
+      # Setup
+      # -------------------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # -------------------------------------------------------------------
+      # Static Analysis
+      # -------------------------------------------------------------------
+      - name: TypeScript typecheck
+        run: npm run typecheck
+
+      - name: ESLint
+        run: npm run lint
+
+      # -------------------------------------------------------------------
+      # Tests
+      # -------------------------------------------------------------------
+      - name: Run unit & integration tests
+        run: npm test
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'ci-dummy-key' }}
+
+      # -------------------------------------------------------------------
+      # Build
+      # -------------------------------------------------------------------
+      - name: Build Next.js application
+        run: npm run build
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'ci-dummy-key' }}
