@@ -107,12 +107,111 @@ export function hitungAnalisisFinansial(input: HitungFinansialInput): HitungFina
 }
 
 // =========================================================================
+// SYSTEM INSTRUCTION — Street-Smart Mentor Garis Keras
+// =========================================================================
+
+const SYSTEM_INSTRUCTION_DIAGNOSIS = `Kamu BUKAN konsultan formal. Kamu adalah Growth Hacker & Mentor Bisnis Garis Keras yang benci teori bertele-tele. Kamu ngomong realita pahit yang bikin pengusaha sadar, tapi langsung kasih solusi praktis yang bisa dijalanin besok pagi.
+
+IDENTITAS:
+- Tone: tegas, realistis, menyentil tapi sangat solutif.
+- Kamu paham betul kehidupan UMKM Indonesia. Istilah boncos, laci bocor, kerja rodi, subsidi pembeli, stok mati, di-PHP pembeli, kuncian cashflow, itu bahasa sehari-hari kamu.
+
+TUGAS:
+Terima data keluhan dan kondisi bisnis UMKM, lalu:
+1. Buat DIAGNOSIS yang jujur dan blak-blakan dari 4 aspek (Keuangan, Stok, Pemasaran, Layanan).
+2. Rancang SATU ide pivot nama paket layanan berlangganan (harian/mingguan/bulanan). Nama paket HARUS pakai psikologi kelangkaan atau status premium. DILARANG nama generik kayak "Paket Hemat" atau "Paket Semangat Pagi".
+3. Deksripsi pivot HARUS berisi langkah operasional taktis 1-2-3 yang sangat bumi. Jangan suruh 'analisis pasar'.
+4. Draft WA harus ngalir kayak chat manusia asli. DILARANG emoji lebay (🚀🔥) atau kata-kata robot "Halo Kak! Kami ada kabar gembira".
+
+Kembalikan output dalam JSON murni tanpa markdown block.`;
+
+const SYSTEM_INSTRUCTION_CHAT = `Kamu adalah Growth Hacker & Mentor Bisnis Garis Keras yang benci teori bertele-tele. Sekarang kamu lagi sesi tanya-jawab lanjutan dengan pengusaha UMKM yang udah dapet resep bisnis dari kamu sebelumnya.
+
+PEDOMAN:
+- Jawab singkat, padat, langsung ke inti masalah operasional lapangan.
+- Tetap gunakan tone tegas, realistis, dan blak-blakan.
+- Gunakan istilah bisnis lokal yang konkret (boncos, laci bocor, stok mati, dll).
+- Solusi harus praktis dan bisa dijalankan besok pagi, bukan teori muluk.
+- DILARANG emoji berlebihan atau bahasa robot.
+
+Kembalikan output dalam format JSON murni dengan properti "reply" berisi string jawaban kamu. Jangan gunakan markdown block (triple backtick).`;
+
+// =========================================================================
 // POST HANDLER
 // =========================================================================
 
 export async function POST(request: any) {
   try {
-    const { produk, hargaModal, hargaJualLama, keluhan } = await request.json();
+    const payload = await request.json();
+
+    // ===================================================================
+    // MODE 1: Chat / Tanya-Jawab Lanjutan
+    // ===================================================================
+    if (payload.chatHistory && payload.pertanyaan) {
+      const { chatHistory, pertanyaan } = payload;
+
+      if (!Array.isArray(chatHistory) || !pertanyaan) {
+        return NextResponse.json({ error: 'Data chat tidak valid.' }, { status: 400 });
+      }
+
+      const model = getGenAI().getGenerativeModel({
+        model: 'gemini-2.5-flash',
+        systemInstruction: SYSTEM_INSTRUCTION_CHAT,
+      });
+
+      // Bangun konteks percakapan dari riwayat chat
+      const contents: any[] = [];
+
+      // Tambahkan riwayat diagnosis awal jika ada di chatHistory[0]
+      // Konteks: nama produk, harga modal, dll sudah tertanam di chat awal
+      for (const msg of chatHistory) {
+        if (msg.question) {
+          contents.push({ role: 'user', parts: [{ text: msg.question }] });
+        }
+        if (msg.answer) {
+          contents.push({ role: 'model', parts: [{ text: msg.answer }] });
+        }
+      }
+
+      // Tambahkan pertanyaan terakhir user
+      const promptChat = `Pertanyaan user: "${pertanyaan}"
+
+Jawab dengan JSON:
+{
+  "reply": "jawaban kamu yang singkat, padat, dan praktis"
+}`;
+
+      contents.push({ role: 'user', parts: [{ text: promptChat }] });
+
+      const result = await model.generateContent({
+        contents,
+        generationConfig: {
+          responseMimeType: 'application/json',
+          temperature: 0.7,
+        },
+      });
+
+      const rawResponse = result.response.text();
+      if (!rawResponse) {
+        return NextResponse.json({ reply: 'Maaf, saya gagal merespons. Coba tanya lagi ya.' }, { status: 200 });
+      }
+
+      const cleaned = bersihkanMarkdownJSON(rawResponse);
+      let replyData: any;
+
+      try {
+        replyData = JSON.parse(cleaned);
+      } catch (parseError: any) {
+        return NextResponse.json({ reply: cleaned }, { status: 200 });
+      }
+
+      return NextResponse.json({ reply: replyData.reply || cleaned }, { status: 200 });
+    }
+
+    // ===================================================================
+    // MODE 2: Diagnosis Awal (Flow lama yang sudah berjalan)
+    // ===================================================================
+    const { produk, hargaModal, hargaJualLama, keluhan } = payload;
 
     // Validasi input dasar
     if (!produk || !hargaModal || !hargaJualLama || !keluhan) {
@@ -122,16 +221,10 @@ export async function POST(request: any) {
     // Konversi input harga ke number
     const hargaModalPerUnit: number = Number(hargaModal);
 
-    // Dapatkan model dari lazy-loaded AI instance (hanya throw jika API key tidak ada saat runtime)
+    // Dapatkan model dari lazy-loaded AI instance
     const model = getGenAI().getGenerativeModel({
       model: 'gemini-2.5-flash',
-      systemInstruction: `Kamu adalah "Dokter UMKM", seorang konsultan bisnis praktis dan analitis yang ahli dalam merancang model bisnis berlangganan (subscription) atau productized services untuk pedagang kecil di Indonesia.
-Tugasmu adalah menerima data keluhan dan kondisi bisnis UMKM, lalu merumuskan SATU ide pivot bisnis yang spesifik, realistis, dan anti-FOMO (jangan pernah menyarankan diskon/banting harga).
-
-Aturan Wajib:
-1. Gunakan bahasa Indonesia santai yang mudah dipahami pedagang kecil, bukan bahasa korporat.
-2. Ide pivot HARUS berbasis paket langganan (harian/mingguan/bulanan).
-3. Kamu WAJIB mengembalikan output dalam format JSON murni tanpa markdown block (\`\`\`json).`,
+      systemInstruction: SYSTEM_INSTRUCTION_DIAGNOSIS,
     });
 
     const prompt = `Profil Bisnis UMKM:
@@ -142,12 +235,12 @@ Aturan Wajib:
 
 Kembalikan JSON dengan struktur tepat seperti ini:
 {
-  "diagnosis": "analisis singkat kenapa strategi lama mereka gagal",
-  "nama_ide_pivot": "nama paket langganan yang catchy",
-  "deskripsi_pivot": "cara kerja operasional model langganan baru ini",
+  "diagnosis": "analisis blak-blakan dari 4 aspek (Keuangan, Stok, Pemasaran, Layanan) — jangan teori, langsung tembak masalah riil pakai istilah boncos, laci bocor, subsidi pembeli, dll",
+  "nama_ide_pivot": "nama paket langganan yang pakai psikologi kelangkaan/status premium — dilarang generik!",
+  "deskripsi_pivot": "langkah operasional taktis 1-2-3 yang bisa dijalankan besok pagi",
   "estimasi_harga_jual_baru": 150000,
   "jumlah_unit_per_paket": 10,
-  "draft_whatsapp": "teks promosi persuasif maksimal 4 kalimat untuk ditawarkan ke pelanggan"
+  "draft_whatsapp": "draf chat WA yang ngalir kayak manusia, dilarang emoji lebay atau kata robot"
 }
 
 Isian "jumlah_unit_per_paket" adalah jumlah unit/porsi yang didapatkan konsumen dalam SATU paket langganan tersebut. Contoh: jika ide pivotnya "Paket Kopi 20 Gelas" maka jumlah_unit_per_paket = 20. Jika ide pivotnya bukan tipe paket/grosir (misal jasa konsultasi), maka jumlah_unit_per_paket = 1.`;
@@ -161,14 +254,13 @@ Isian "jumlah_unit_per_paket" adalah jumlah unit/porsi yang didapatkan konsumen 
       },
     });
 
-    // Ambil teks mentah dari response (method invocation)
+    // Ambil teks mentah dari response
     const rawResponse = result.response.text();
     if (!rawResponse) {
       throw new Error("Gagal menerima respons dari Gemini API.");
     }
 
     // --- ROBUST JSON EXTRACTION LAYER ---
-    // Bersihkan bungkusan markdown ```json ... ``` jika AI bandel
     const cleanedResponse = bersihkanMarkdownJSON(rawResponse);
 
     // Parse JSON dengan try-catch internal - jika gagal, pakai fallback
@@ -180,7 +272,7 @@ Isian "jumlah_unit_per_paket" adalah jumlah unit/porsi yang didapatkan konsumen 
       aiData = buatFallbackJSON(produk, hargaModalPerUnit);
     }
 
-    // Validasi field kritis - jika tidak valid, pakai nilai aman
+    // Validasi field kritis
     if (typeof aiData.estimasi_harga_jual_baru !== 'number' || aiData.estimasi_harga_jual_baru <= 0) {
       aiData.estimasi_harga_jual_baru = Math.round(hargaModalPerUnit * 1.5);
     }

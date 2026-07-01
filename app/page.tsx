@@ -2,13 +2,16 @@
 
 import { useState, useEffect, useRef } from 'react';
 import {
-  Stethoscope, FileText, BrainCircuit, Send,
+  Stethoscope, BrainCircuit,
   HeartPulse, ArrowDownToLine, Syringe, Sparkles, ScrollText,
-  AlertTriangle, TrendingDown, ShoppingBag, Users,
+  AlertTriangle, Wallet, TrendingDown, Boxes, MessageSquareX,
 } from 'lucide-react';
 import FormDiagnose from '@/app/components/FormDiagnose';
 import RiwayatPanel from '@/app/components/RiwayatPanel';
 import ResepCard from '@/app/components/ResepCard';
+import CaraKerja from '@/app/components/CaraKerja';
+import ChatBox from '@/app/components/ChatBox';
+import type { ChatLogEntry } from '@/app/components/ChatBox';
 
 interface HistoryItem {
   id: string;
@@ -19,7 +22,50 @@ interface HistoryItem {
   keluhan: string;
   nama_ide_pivot: string;
   report: any;
+  chatLogs?: ChatLogEntry[];
+  followUpCount?: number;
 }
+
+const MAX_FOLLOW_UPS = 3;
+
+const PAIN_POINTS = [
+  {
+    icon: Wallet,
+    label: 'Keuangan',
+    title: 'Pengelolaan Keuangan (Sindrom Laci Warung)',
+    desc: 'Uang hasil penjualan tercampur dengan uang dapur. Omzet harian terlihat besar, tapi pas akhir bulan dihitung, saldo ATM malah nol dan modal habis tak berbekas.',
+    gradient: 'from-rose-300 to-rose-400',
+    badge: 'bg-rose-50/80 border-rose-100/80 text-rose-600',
+    iconBg: 'bg-rose-50 border-rose-100 text-rose-500',
+  },
+  {
+    icon: TrendingDown,
+    label: 'Pemasaran',
+    title: 'Pemasaran Digital (Korban Banting Harga)',
+    desc: 'Sudah lelah bikin konten dan bakar modal buat promosi, tapi pembeli cuma datang pas ada diskon gila-gilaan. Begitu harga kembali normal, toko langsung sepi senyap.',
+    gradient: 'from-amber-300 to-amber-400',
+    badge: 'bg-amber-50/80 border-amber-100/80 text-amber-600',
+    iconBg: 'bg-amber-50 border-amber-100 text-amber-500',
+  },
+  {
+    icon: Boxes,
+    label: 'Stok',
+    title: 'Manajemen Stok (Modal Mati di Gudang)',
+    desc: 'Salah prediksi tren membuat barang yang tidak laku menumpuk jadi pajangan mati di gudang, sementara produk yang sedang dicari pelanggan malah kehabisan modal untuk kulakan.',
+    gradient: 'from-sky-300 to-sky-400',
+    badge: 'bg-sky-50/80 border-sky-100/80 text-sky-600',
+    iconBg: 'bg-sky-50 border-sky-100 text-sky-500',
+  },
+  {
+    icon: MessageSquareX,
+    label: 'Layanan',
+    title: 'Layanan Pelanggan (Habis Energi Bales Chat)',
+    desc: 'Energi habis seharian hanya untuk membalas ribuan chat calon pembeli yang cuma "P", tanya-tanya kelengkapan produk, minta diskon gratis ongkir, tapi ujung-ujungnya PHP.',
+    gradient: 'from-violet-300 to-violet-400',
+    badge: 'bg-violet-50/80 border-violet-100/80 text-violet-600',
+    iconBg: 'bg-violet-50 border-violet-100 text-violet-500',
+  },
+];
 
 export default function KlinikUMKM() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -27,6 +73,13 @@ export default function KlinikUMKM() {
   const [report, setReport] = useState<any>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [mounted, setMounted] = useState<boolean>(false);
+
+  // Chat 3 Ronde States
+  const [chatLogs, setChatLogs] = useState<ChatLogEntry[]>([]);
+  const [followUpCount, setFollowUpCount] = useState<number>(0);
+  const [isSessionClosed, setIsSessionClosed] = useState<boolean>(false);
+  const [chatLoading, setChatLoading] = useState<boolean>(false);
+  const [currentHistoryId, setCurrentHistoryId] = useState<string | null>(null);
 
   const formRef = useRef<HTMLDivElement>(null);
 
@@ -53,7 +106,7 @@ export default function KlinikUMKM() {
     }
   }, []);
 
-  const simpanRiwayat = (newReport: any) => {
+  const simpanRiwayat = (newReport: any, chatData?: { chatLogs: ChatLogEntry[]; followUpCount: number }) => {
     const item: HistoryItem = {
       id: Date.now().toString(),
       timestamp: new Date().toLocaleString('id-ID'),
@@ -63,9 +116,12 @@ export default function KlinikUMKM() {
       keluhan: form.keluhan,
       nama_ide_pivot: newReport.nama_ide_pivot || '',
       report: newReport,
+      chatLogs: chatData?.chatLogs || [],
+      followUpCount: chatData?.followUpCount || 0,
     };
     const updated = [item, ...history].slice(0, 20);
     setHistory(updated);
+    setCurrentHistoryId(item.id);
     try {
       localStorage.setItem('klinik-umkm-history', JSON.stringify(updated));
     } catch (e: any) {
@@ -73,9 +129,28 @@ export default function KlinikUMKM() {
     }
   };
 
+  const updateRiwayatChat = (chatLogs: ChatLogEntry[], followUpCount: number) => {
+    setHistory(prev => {
+      const updated = prev.map((item: HistoryItem) => {
+        if (item.id === currentHistoryId) {
+          return { ...item, chatLogs, followUpCount };
+        }
+        return item;
+      });
+      try {
+        localStorage.setItem('klinik-umkm-history', JSON.stringify(updated));
+      } catch (e: any) {}
+      return updated;
+    });
+  };
+
   const muatDariRiwayat = (item: HistoryItem) => {
     setReport(item.report);
     setError('');
+    setChatLogs(item.chatLogs || []);
+    setFollowUpCount(item.followUpCount || 0);
+    setIsSessionClosed((item.followUpCount || 0) >= MAX_FOLLOW_UPS);
+    setCurrentHistoryId(item.id);
     setForm({
       produk: item.produk || '',
       hargaModal: item.hargaModal || '',
@@ -105,6 +180,10 @@ export default function KlinikUMKM() {
     setLoading(true);
     setError('');
     setReport(null);
+    setChatLogs([]);
+    setFollowUpCount(0);
+    setIsSessionClosed(false);
+    setCurrentHistoryId(null);
 
     try {
       const res = await fetch('/api/diagnose', {
@@ -132,11 +211,83 @@ export default function KlinikUMKM() {
 
   const handleKonsultasiUlang = () => {
     setReport(null);
+    setChatLogs([]);
+    setFollowUpCount(0);
+    setIsSessionClosed(false);
+    setCurrentHistoryId(null);
     setForm({ produk: '', hargaModal: '', hargaJualLama: '', keluhan: '' });
   };
 
   const scrollToForm = () => {
     formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const handleChatSubmit = async (question: string) => {
+    if (chatLoading || isSessionClosed) return;
+
+    const userQuestion = question;
+    setChatLoading(true);
+
+    // Rekam pertanyaan user ke log lokal dulu
+    const updatedLogs: ChatLogEntry[] = [
+      ...chatLogs,
+      { question: userQuestion, answer: '' },
+    ];
+    setChatLogs(updatedLogs);
+
+    try {
+      // Bangun chatHistory untuk dikirim ke API
+      const chatHistoryPayload = chatLogs.map((log: ChatLogEntry) => ({
+        question: log.question,
+        answer: log.answer,
+      }));
+
+      const res = await fetch('/api/diagnose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chatHistory: chatHistoryPayload,
+          pertanyaan: userQuestion,
+        }),
+      });
+
+      const data = await res.json();
+      const aiReply = data.reply || 'Maaf, saya tidak bisa menjawab saat ini. Coba lagi ya.';
+
+      const newCount = followUpCount + 1;
+
+      // Update log dengan jawaban AI
+      const finalLogs: ChatLogEntry[] = [
+        ...chatLogs,
+        { question: userQuestion, answer: aiReply },
+      ];
+
+      setChatLogs(finalLogs);
+      setFollowUpCount(newCount);
+
+      if (newCount >= MAX_FOLLOW_UPS) {
+        setIsSessionClosed(true);
+      }
+
+      // Simpan ke localStorage via update riwayat
+      updateRiwayatChat(finalLogs, newCount);
+
+    } catch (err: any) {
+      // Jika gagal, tetap catat jawaban error
+      const failedCount = followUpCount + 1;
+      const failedLogs: ChatLogEntry[] = [
+        ...chatLogs,
+        { question: userQuestion, answer: 'Maaf, terjadi gangguan jaringan. Coba tanya lagi ya.' },
+      ];
+      setChatLogs(failedLogs);
+      setFollowUpCount(failedCount);
+      if (failedCount >= MAX_FOLLOW_UPS) {
+        setIsSessionClosed(true);
+      }
+      updateRiwayatChat(failedLogs, failedCount);
+    } finally {
+      setChatLoading(false);
+    }
   };
 
   return (
@@ -215,132 +366,60 @@ export default function KlinikUMKM() {
       </section>
 
       {/* ================================================================== */}
-      {/* PAIN POINT GRID                                                    */}
+      {/* EMOTIONAL PAIN POINTS — 4 KOLOM (Desktop) / 1 KOLOM (Mobile)       */}
       {/* ================================================================== */}
       <section className="px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Kenali 3 Penyakit Kronis UMKM
+              Pilih Penyakit Bisnis yang Paling Membuat Anda Lelah Saat Ini
             </h2>
             <p className="mt-3 text-slate-500 max-w-lg mx-auto">
-              Salah satu saja dari gejala di bawah ini sudah cukup untuk membuat bisnis Anda 
-              jalan di tempat. Tenang, semua bisa diobati.
+              Pilih salah satu—atau jujur saja, Anda pasti mengalami lebih dari satu. 
+              Tenang, semua ada resep obatnya.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div className="group relative backdrop-blur-xl bg-white/80 border border-slate-100/80 rounded-3xl p-6 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1">
-              <div className="absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r from-rose-300 to-rose-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center mb-4">
-                <TrendingDown className="w-6 h-6 text-rose-500" />
-              </div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-rose-50/80 border border-rose-100/80 rounded-full text-[10px] font-bold uppercase tracking-wider text-rose-600 mb-3">
-                <span className="w-1 h-1 rounded-full bg-rose-500" />Gejala #1
-              </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-2">Margin Tipis Tersiksa</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Harga jual hampir sama dengan modal. Untung cuma receh, tapi capeknya setara 
-                kerja 12 jam sehari. Begitu diakumulasi, gaji owner bahkan kalah sama karyawan.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+            {PAIN_POINTS.map((point, idx) => {
+              const IconComp = point.icon;
+              return (
+                <div
+                  key={idx}
+                  className="group relative backdrop-blur-xl bg-white/75 border border-slate-200/70 rounded-3xl p-5 sm:p-6 shadow-[0_2px_16px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1"
+                >
+                  {/* Glassmorphism shine overlay */}
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-b from-white/40 to-transparent pointer-events-none" />
 
-            <div className="group relative backdrop-blur-xl bg-white/80 border border-slate-100/80 rounded-3xl p-6 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1">
-              <div className="absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r from-amber-300 to-amber-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center mb-4">
-                <ShoppingBag className="w-6 h-6 text-amber-500" />
-              </div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50/80 border border-amber-100/80 rounded-full text-[10px] font-bold uppercase tracking-wider text-amber-600 mb-3">
-                <span className="w-1 h-1 rounded-full bg-amber-500" />Gejala #2
-              </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-2">Korban Diskon &amp; FOMO</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Tetangga banting harga, ikut banting harga. Tren musiman berganti, ikut ganti 
-                produk. Siklus seterusnya tanpa pernah punya fondasi bisnis yang stabil dan 
-                pelanggan setia.
-              </p>
-            </div>
+                  {/* Top accent line */}
+                  <div className={`absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r ${point.gradient} rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
 
-            <div className="group relative backdrop-blur-xl bg-white/80 border border-slate-100/80 rounded-3xl p-6 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1">
-              <div className="absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r from-sky-300 to-sky-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="w-12 h-12 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center mb-4">
-                <Users className="w-6 h-6 text-sky-500" />
-              </div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-sky-50/80 border border-sky-100/80 rounded-full text-[10px] font-bold uppercase tracking-wider text-sky-600 mb-3">
-                <span className="w-1 h-1 rounded-full bg-sky-500" />Gejala #3
-              </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-2">Pelanggan Musiman, Nggak Loyal</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Pelanggan cuma datang pas ada promo. Begitu harga normal, mereka kabur ke 
-                kompetitor. Nggak ada ikatan jangka panjang, nggak ada uang berulang tiap bulan.
-              </p>
-            </div>
+                  <div className="relative z-10">
+                    <div className={`w-11 h-11 rounded-2xl ${point.iconBg} flex items-center justify-center mb-3.5`}>
+                      <IconComp className="w-5 h-5" />
+                    </div>
+
+                    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 ${point.badge} rounded-full text-[10px] font-bold uppercase tracking-wider mb-2.5`}>
+                      <span className={`w-1 h-1 rounded-full bg-current`} />
+                      {point.label}
+                    </div>
+
+                    <h3 className="text-sm font-bold text-slate-900 mb-2 leading-snug">
+                      {point.title}
+                    </h3>
+
+                    <p className="text-xs text-slate-500 leading-relaxed">
+                      {point.desc}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* ================================================================== */}
-      {/* HOW IT WORKS                                                       */}
-      {/* ================================================================== */}
-      <section className="px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Cara Kerja Dokter AI
-            </h2>
-            <p className="mt-3 text-slate-500 max-w-lg mx-auto">
-              Tiga langkah sederhana. Hasilnya resep model bisnis yang nggak bakal Anda 
-              dapatkan dari buku manajemen biasa.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            <div className="hidden md:block absolute top-12 left-[16.66%] right-[16.66%] h-0.5 bg-gradient-to-r from-emerald-200 via-emerald-300 to-emerald-200" />
-
-            <div className="relative flex flex-col items-center text-center">
-              <div className="w-14 h-14 rounded-full bg-emerald-100 border-2 border-emerald-200 flex items-center justify-center mb-5 relative z-10 shadow-[0_4px_16px_rgb(16,185,129,0.1)]">
-                <span className="text-xl font-black text-emerald-700">1</span>
-              </div>
-              <div className="w-12 h-12 rounded-2xl bg-emerald-50/80 border border-emerald-100/80 flex items-center justify-center mb-3">
-                <FileText className="w-6 h-6 text-emerald-600" />
-              </div>
-              <h3 className="text-base font-bold text-slate-900 mb-2">Input Gejala Bisnis</h3>
-              <p className="text-sm text-slate-500 leading-relaxed max-w-[240px]">
-                Masukkan nama produk, HPP per unit, harga jual saat ini, dan keluhan utama 
-                yang Anda rasakan.
-              </p>
-            </div>
-
-            <div className="relative flex flex-col items-center text-center">
-              <div className="w-14 h-14 rounded-full bg-emerald-100 border-2 border-emerald-200 flex items-center justify-center mb-5 relative z-10 shadow-[0_4px_16px_rgb(16,185,129,0.1)]">
-                <span className="text-xl font-black text-emerald-700">2</span>
-              </div>
-              <div className="w-12 h-12 rounded-2xl bg-emerald-50/80 border border-emerald-100/80 flex items-center justify-center mb-3">
-                <BrainCircuit className="w-6 h-6 text-emerald-600" />
-              </div>
-              <h3 className="text-base font-bold text-slate-900 mb-2">AI Analisis &amp; Hitung</h3>
-              <p className="text-sm text-slate-500 leading-relaxed max-w-[240px]">
-                Dokter AI (Gemini 2.5 Flash) memproses data Anda: struktur biaya, margin, 
-                BEP, plus rekomendasi model langganan yang sesuai.
-              </p>
-            </div>
-
-            <div className="relative flex flex-col items-center text-center">
-              <div className="w-14 h-14 rounded-full bg-emerald-100 border-2 border-emerald-200 flex items-center justify-center mb-5 relative z-10 shadow-[0_4px_16px_rgb(16,185,129,0.1)]">
-                <span className="text-xl font-black text-emerald-700">3</span>
-              </div>
-              <div className="w-12 h-12 rounded-2xl bg-emerald-50/80 border border-emerald-100/80 flex items-center justify-center mb-3">
-                <Send className="w-6 h-6 text-emerald-600" />
-              </div>
-              <h3 className="text-base font-bold text-slate-900 mb-2">Resep + Draf WA Siap</h3>
-              <p className="text-sm text-slate-500 leading-relaxed max-w-[240px]">
-                Dapatkan laporan diagnosis, kalkulasi finansial transparan, plus draf 
-                WhatsApp yang tinggal Anda kirim ke pelanggan.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <CaraKerja />
 
       {/* ================================================================== */}
       {/* FORM & DIAGNOSIS CONTAINER                                         */}
@@ -406,12 +485,23 @@ export default function KlinikUMKM() {
             </div>
           )}
 
-          {/* Hasil Diagnosis */}
+          {/* Hasil Diagnosis + Chat 3 Ronde */}
           {report && (
-            <ResepCard
-              report={report}
-              onKonsultasiUlang={handleKonsultasiUlang}
-            />
+            <div className="space-y-6">
+              <ResepCard
+                report={report}
+                onKonsultasiUlang={handleKonsultasiUlang}
+              />
+
+              <ChatBox
+                chatLogs={chatLogs}
+                followUpCount={followUpCount}
+                isSessionClosed={isSessionClosed}
+                chatLoading={chatLoading}
+                maxFollowUps={MAX_FOLLOW_UPS}
+                onSendMessage={handleChatSubmit}
+              />
+            </div>
           )}
 
         </div>
