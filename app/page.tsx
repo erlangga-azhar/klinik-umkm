@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import {
-  Stethoscope, BrainCircuit,
+  BrainCircuit,
   HeartPulse, ArrowDownToLine, Syringe, Sparkles, ScrollText,
   AlertTriangle, Wallet, TrendingDown, Boxes, MessageSquareX,
 } from 'lucide-react';
@@ -11,6 +11,7 @@ import RiwayatPanel from '@/app/components/RiwayatPanel';
 import ResepCard from '@/app/components/ResepCard';
 import CaraKerja from '@/app/components/CaraKerja';
 import ChatBox from '@/app/components/ChatBox';
+import FooterLegal from '@/app/components/FooterLegal';
 import type { ChatLogEntry } from '@/app/components/ChatBox';
 
 interface HistoryItem {
@@ -507,24 +508,7 @@ export default function KlinikUMKM() {
         </div>
       </section>
 
-      {/* ================================================================== */}
-      {/* FOOTER                                                             */}
-      {/* ================================================================== */}
-      <footer className="border-t border-slate-100 bg-white/50 backdrop-blur-sm">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-sm text-slate-400">
-              <Stethoscope className="w-4 h-4 text-emerald-500" />
-              <span>Klinik UMKM &mdash; Diagnosis Berbasis AI</span>
-            </div>
-            <div className="flex items-center gap-4 text-xs text-slate-400">
-              <span>Gratis &bull; Open Source</span>
-              <span className="w-1 h-1 rounded-full bg-slate-300" />
-              <span>Ditenagai Gemini 2.5 Flash</span>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <FooterLegal />
 
     </main>
   );
