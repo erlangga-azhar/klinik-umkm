@@ -231,6 +231,12 @@ export function useDiagnose(): UseDiagnoseReturn {
       });
 
       const data = await res.json();
+
+      // --- 429 Too Many Requests — tampilkan pesan khusus ---
+      if (res.status === 429) {
+        throw new Error(data.error || 'Terlalu banyak permintaan. Silakan coba lagi dalam beberapa menit.');
+      }
+
       if (!res.ok) throw new Error(data.error || 'Gagal memproses data.');
 
       setReport(data);
@@ -283,6 +289,24 @@ export function useDiagnose(): UseDiagnoseReturn {
       });
 
       const data = await res.json();
+
+      // --- 429 Too Many Requests pada chat — tampilkan pesan khusus ---
+      if (res.status === 429) {
+        const failedCount = followUpCount + 1;
+        const failedLogs: ChatLogEntry[] = [
+          ...chatLogs,
+          { question: userQuestion, answer: data.error || 'Terlalu banyak permintaan. Silakan coba lagi dalam beberapa menit.' },
+        ];
+        setChatLogs(failedLogs);
+        setFollowUpCount(failedCount);
+        if (failedCount >= MAX_FOLLOW_UPS) {
+          setIsSessionClosed(true);
+        }
+        updateRiwayatChat(failedLogs, failedCount);
+        setChatLoading(false);
+        return;
+      }
+
       const aiReply = data.reply || 'Maaf, saya tidak bisa menjawab saat ini. Coba lagi ya.';
       const newCount = followUpCount + 1;
 

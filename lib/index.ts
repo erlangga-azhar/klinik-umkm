@@ -34,3 +34,10 @@ export {
   SYSTEM_INSTRUCTION_DIAGNOSIS,
   SYSTEM_INSTRUCTION_CHAT,
 } from './geminiService';
+
+export {
+  isRateLimited,
+  getClientIP,
+  buildRateLimitError,
+  resetRateLimitStore,
+} from './rateLimiter';

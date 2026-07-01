@@ -26,10 +26,21 @@ vi.mock('@google/generative-ai', () => ({
 // Sekarang import — getGenAI() akan return instance dari mock di atas
 import { POST } from '@/app/api/diagnose/route';
 
+import { resetRateLimitStore } from '@/lib';
+
 // Helper: buat mock Request object seperti Next.js
-function createMockRequest(body: any): any {
+function createMockRequest(body: any, ip?: string): any {
+  const clientIP = ip || '127.0.0.1';
   return {
     json: () => Promise.resolve(body),
+    headers: {
+      get: (name: string) => {
+        const headers: Record<string, string> = {
+          'x-forwarded-for': clientIP,
+        };
+        return headers[name.toLowerCase()] || headers[name] || null;
+      },
+    },
   };
 }
 
@@ -47,6 +58,7 @@ describe('POST /api/diagnose — Integration Tests', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    resetRateLimitStore();
   });
 
   // -----------------------------------------------------------------------
@@ -302,5 +314,123 @@ describe('POST /api/diagnose — Integration Tests', () => {
     expect(data.analisis_finansial).toHaveProperty('margin_persen');
     expect(data.analisis_finansial).toHaveProperty('keuntungan_per_paket');
     expect(data.analisis_finansial).toHaveProperty('target_pelanggan_bep');
+  });
+
+  // -----------------------------------------------------------------------
+  // Test 8: Rate limiting — 3 request sukses, ke-4 ditolak 429
+  // -----------------------------------------------------------------------
+  it('mengembalikan 429 setelah 3 request dari IP yang sama', async () => {
+    const aiResponse = JSON.stringify({
+      diagnosis: { keuangan: 'A', stok: 'B', pemasaran: 'C', layanan: 'D' },
+      nama_ide_pivot: 'Paket Test',
+      deskripsi_pivot: 'Test',
+      estimasi_harga_jual_baru: 50000,
+      jumlah_unit_per_paket: 1,
+      draft_whatsapp: 'Test',
+    });
+
+    mockGenerateContent.mockResolvedValue({
+      response: { text: () => aiResponse },
+    });
+
+    const reqBody = {
+      produk: 'Test',
+      hargaModal: 10000,
+      hargaJualLama: 15000,
+      keluhan: 'Test keluhan',
+    };
+
+    // 3 request pertama harus sukses (200)
+    for (let i = 0; i < 3; i++) {
+      const { status } = await parseResponse(
+        await POST(createMockRequest(reqBody, '192.168.1.100'))
+      );
+      expect(status).toBe(200);
+    }
+
+    // Request ke-4 dari IP yang sama harus ditolak (429)
+    const { status, data } = await parseResponse(
+      await POST(createMockRequest(reqBody, '192.168.1.100'))
+    );
+    expect(status).toBe(429);
+    expect(data.error).toContain('Terlalu banyak permintaan');
+  });
+
+  // -----------------------------------------------------------------------
+  // Test 9: Rate limiting bersifat per-IP (IP berbeda tidak kena limit)
+  // -----------------------------------------------------------------------
+  it('tidak memblokir IP yang berbeda meski total request melebihi batas', async () => {
+    const aiResponse = JSON.stringify({
+      diagnosis: { keuangan: 'A', stok: 'B', pemasaran: 'C', layanan: 'D' },
+      nama_ide_pivot: 'Paket A',
+      deskripsi_pivot: 'Test',
+      estimasi_harga_jual_baru: 50000,
+      jumlah_unit_per_paket: 1,
+      draft_whatsapp: 'Test',
+    });
+
+    mockGenerateContent.mockResolvedValue({
+      response: { text: () => aiResponse },
+    });
+
+    const reqBody = {
+      produk: 'Test',
+      hargaModal: 10000,
+      hargaJualLama: 15000,
+      keluhan: 'Test',
+    };
+
+    // IP-A: 3 request (penuh)
+    for (let i = 0; i < 3; i++) {
+      const { status } = await parseResponse(
+        await POST(createMockRequest(reqBody, '10.0.0.1'))
+      );
+      expect(status).toBe(200);
+    }
+
+    // IP-A: request ke-4 ditolak
+    const { status: statusA, data: dataA } = await parseResponse(
+      await POST(createMockRequest(reqBody, '10.0.0.1'))
+    );
+    expect(statusA).toBe(429);
+    expect(dataA.error).toContain('Terlalu banyak');
+
+    // IP-B: tetap bisa request karena IP berbeda
+    const { status: statusB } = await parseResponse(
+      await POST(createMockRequest(reqBody, '10.0.0.2'))
+    );
+    expect(statusB).toBe(200);
+  });
+
+  // -----------------------------------------------------------------------
+  // Test 10: Mode chat juga kena rate limit
+  // -----------------------------------------------------------------------
+  it('rate limit juga berlaku untuk mode chat (follow-up)', async () => {
+    resetRateLimitStore();
+
+    const aiChatResponse = JSON.stringify({ reply: 'Test reply' });
+    mockGenerateContent.mockResolvedValue({
+      response: { text: () => aiChatResponse },
+    });
+
+    const chatBody = {
+      chatHistory: [{ question: 'Test?', answer: 'Test!' }],
+      pertanyaan: 'Pertanyaan test',
+    };
+
+    // 3 chat request dari IP yang sama
+    for (let i = 0; i < 3; i++) {
+      const { status } = await parseResponse(
+        await POST(createMockRequest(chatBody, '172.16.0.50'))
+      );
+      expect(status).toBe(200);
+    }
+
+    // Ke-4 ditolak
+    const { status, data } = await parseResponse(
+      await POST(createMockRequest(chatBody, '172.16.0.50'))
+    );
+    expect(status).toBe(429);
+    expect(data.error).toContain('Terlalu banyak permintaan');
   });
 });
